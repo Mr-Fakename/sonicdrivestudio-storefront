@@ -1,11 +1,11 @@
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { redirect } from "next/navigation";
 
 /**
  * Route handler to clear authentication cookies when JWT signature expires
  * This is a Route Handler (not a Server Component) so it can modify cookies
  */
-export async function GET(request: Request) {
+export async function GET() {
 	console.warn("[AUTH] Clearing expired session cookies...");
 
 	const cookieStore = await cookies();
@@ -14,10 +14,7 @@ export async function GET(request: Request) {
 	cookieStore.delete("saleor-access-token");
 	cookieStore.delete("saleor-refresh-token");
 
-	// Get the origin from the request to build the redirect URL
-	const url = new URL(request.url);
-	const redirectUrl = new URL("/", url.origin);
-
 	// Redirect to home page with clean state
-	return NextResponse.redirect(redirectUrl);
+	// Using redirect() ensures proper URL handling regardless of environment
+	redirect("/");
 }

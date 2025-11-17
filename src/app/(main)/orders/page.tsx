@@ -35,7 +35,7 @@ export default async function OrderPage() {
 			) : (
 				<ul className="mt-8 space-y-6">
 					{orders.map(({ node: order }) => {
-						return <OrderListItem order={order} key={order.id} />;
+						return <OrderListItem order={order} customerEmail={user.email} key={order.id} />;
 					})}
 				</ul>
 			)}

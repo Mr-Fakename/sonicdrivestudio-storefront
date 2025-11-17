@@ -3,12 +3,14 @@ import { LinkWithChannel } from "../atoms/LinkWithChannel";
 import { formatDate, formatMoney, getHrefForVariant } from "@/lib/utils";
 import { type OrderDetailsFragment } from "@/gql/graphql";
 import { PaymentStatus } from "@/ui/components/PaymentStatus";
+import { OrderDownloadLinks } from "@/ui/components/OrderDownloadLinks";
 
 type Props = {
 	order: OrderDetailsFragment;
+	customerEmail: string;
 };
 
-export const OrderListItem = ({ order }: Props) => {
+export const OrderListItem = ({ order, customerEmail }: Props) => {
 	return (
 		<li className="bg-white">
 			<div className="flex flex-col gap-2 border bg-neutral-200/20 px-6 py-4 md:grid md:grid-cols-4 md:gap-8">
@@ -125,6 +127,7 @@ export const OrderListItem = ({ order }: Props) => {
 							</tbody>
 						</table>
 					</div>
+					<OrderDownloadLinks orderId={order.id} customerEmail={customerEmail} />
 					<dl className="flex justify-between border-y py-6 text-sm font-medium text-neutral-900 md:border md:px-6">
 						<dt>Total amount including delivery</dt>
 						<dd>{formatMoney(order.total.gross.amount, order.total.gross.currency)}</dd>

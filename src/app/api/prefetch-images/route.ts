@@ -12,9 +12,7 @@ import { DEFAULT_CHANNEL } from "@/app/config";
  * API endpoint for prefetching images based on route pathname
  * Used by enhanced Link component to prefetch images before navigation
  *
- * Note: This route is automatically dynamic due to searchParams usage.
- * The prerender warnings during build can be safely ignored - they indicate
- * that Next.js correctly detected this route needs dynamic rendering.
+ * Note: This route is automatically dynamic because it uses searchParams.
  */
 export async function GET(request: NextRequest) {
 	try {
@@ -35,6 +33,7 @@ export async function GET(request: NextRequest) {
 			const { product } = await executeGraphQL(ProductDetailsDocument, {
 				variables: { slug, channel: DEFAULT_CHANNEL },
 				revalidate: 60,
+				withAuth: false,
 			});
 
 			if (product?.thumbnail?.url) {
@@ -52,6 +51,7 @@ export async function GET(request: NextRequest) {
 			const { category } = await executeGraphQL(ProductListByCategoryDocument, {
 				variables: { slug, channel: DEFAULT_CHANNEL },
 				revalidate: 60,
+				withAuth: false,
 			});
 
 			// Get first few products from category
@@ -72,6 +72,7 @@ export async function GET(request: NextRequest) {
 			const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
 				variables: { slug, channel: DEFAULT_CHANNEL },
 				revalidate: 60,
+				withAuth: false,
 			});
 
 			// Get first few products from collection
@@ -89,6 +90,7 @@ export async function GET(request: NextRequest) {
 			const { products } = await executeGraphQL(ProductListDocument, {
 				variables: { first: 12, channel: DEFAULT_CHANNEL },
 				revalidate: 60,
+				withAuth: false,
 			});
 
 			products?.edges?.forEach((edge) => {

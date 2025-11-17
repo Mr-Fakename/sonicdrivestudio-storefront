@@ -20,7 +20,8 @@ const config = {
 	},
 	// Modern browser target - reduces polyfills significantly
 	compiler: {
-		removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error", "warn"] } : false,
+		// Remove console.log and console.warn in production, keep console.error for critical errors
+		removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false,
 	},
 	// Configure transpilation to target modern browsers only
 	// This tells Next.js to skip unnecessary polyfills

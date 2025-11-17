@@ -4,8 +4,12 @@ import { ChannelsListDocument, MenuGetBySlugDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { CookiePreferencesButton } from "@/components/CookieConsent";
 import { DEFAULT_CHANNEL } from "@/app/config";
+import { headers } from "next/headers";
 
 export async function Footer() {
+	// Access headers to indicate this component uses dynamic data
+	await headers();
+
 	let footerLinks = null;
 	let channels = null;
 
@@ -13,6 +17,7 @@ export async function Footer() {
 		footerLinks = await executeGraphQL(MenuGetBySlugDocument, {
 			variables: { slug: "footer", channel: DEFAULT_CHANNEL },
 			revalidate: 60 * 60 * 24,
+			withAuth: false,
 		});
 	} catch (error) {
 		console.error("Failed to fetch footer menu:", error);
@@ -37,7 +42,7 @@ export async function Footer() {
 		<footer id="footer" className="mt-24 border-t border-base-900 bg-base-950 transition-all duration-300">
 			<div className="mx-auto max-w-7xl px-6 lg:px-12">
 				<div className="grid grid-cols-1 gap-12 py-20 md:grid-cols-3 md:gap-16">
-					{footerLinks.menu?.items?.map((item) => {
+					{footerLinks!.menu?.items?.map((item) => {
 						return (
 							<div key={item.id}>
 								<h3 className="mb-6 font-display text-sm font-medium uppercase tracking-wider text-white">
@@ -110,11 +115,20 @@ export async function Footer() {
 					</div>
 				)}
 
-				<div className="flex flex-col justify-between gap-6 border-t border-base-900 py-10 sm:flex-row sm:items-center">
-					<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+				<div className="flex flex-col gap-4 border-t border-base-900 py-10">
+					<div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
 						<p className="text-sm text-base-400">
-							Copyright &copy; {currentYear} Sonic Drive Studio. All rights reserved.
+							Contact:{" "}
+							<a
+								href="mailto:jon@sonicdrivestudio.com"
+								className="text-accent-300 transition-colors duration-200 hover:text-accent-200"
+							>
+								jon@sonicdrivestudio.com
+							</a>
 						</p>
+						<CookiePreferencesButton />
+					</div>
+					<div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
 						<p className="text-sm text-base-400">
 							🌅 Crafted with care by{" "}
 							<a
@@ -126,7 +140,9 @@ export async function Footer() {
 								Daybreak Development
 							</a>
 						</p>
-						<CookiePreferencesButton />
+						<p className="text-sm text-base-400">
+							Copyright &copy; {currentYear} Sonic Drive Studio. All rights reserved.
+						</p>
 					</div>
 				</div>
 			</div>

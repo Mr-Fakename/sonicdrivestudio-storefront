@@ -46,9 +46,35 @@ export async function executeGraphQL<Result, Variables>(
 			next: { revalidate, tags },
 		};
 
-		const response = withAuth
-			? await (await getServerAuthClient()).fetchWithAuth(apiUrl, input)
-			: await fetch(apiUrl, input);
+		let response: Response;
+
+		if (withAuth) {
+			try {
+				response = await (await getServerAuthClient()).fetchWithAuth(apiUrl, input);
+			} catch (error) {
+				// Handle authentication errors gracefully by falling back to unauthenticated requests
+				const isAuthError =
+					error instanceof Error &&
+					(error.message.includes("Cookies can only be modified") ||
+						error.message.includes("Signature has expired") ||
+						error.message.includes("Invalid token") ||
+						error.message.includes("JWT") ||
+						error.message.includes("Authentication"));
+
+				if (isAuthError) {
+					console.warn(
+						"Authentication error encountered, falling back to unauthenticated request:",
+						error instanceof Error ? error.message : error,
+					);
+					// Fall back to unauthenticated request when tokens are invalid/expired
+					response = await fetch(apiUrl, input);
+				} else {
+					throw error;
+				}
+			}
+		} else {
+			response = await fetch(apiUrl, input);
+		}
 
 		if (!response.ok) {
 			const body = await (async () => {

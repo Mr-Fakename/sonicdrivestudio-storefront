@@ -1,11 +1,60 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { clearInvalidAuthCookies } from "./actions";
+
+function isAuthError(error: Error): boolean {
+	return (
+		error.message.includes("Signature has expired") ||
+		error.message.includes("Invalid token") ||
+		error.message.includes("JWT") ||
+		error.message.includes("Authentication") ||
+		error.message.includes("Cookies can only be modified")
+	);
+}
 
 export default function Error({ error, reset }: { error: Error; reset: () => void }) {
+	const [isHandlingAuthError, setIsHandlingAuthError] = useState(false);
+
 	useEffect(() => {
 		console.error(error);
-	}, [error]);
+
+		// If this is an authentication error, automatically clear cookies and refresh
+		if (isAuthError(error) && !isHandlingAuthError) {
+			setIsHandlingAuthError(true);
+			console.log("Detected authentication error, clearing invalid cookies and refreshing...");
+
+			clearInvalidAuthCookies()
+				.then(() => {
+					// Refresh the page to re-render with cleared cookies
+					window.location.reload();
+				})
+				.catch((err) => {
+					console.error("Failed to clear invalid cookies:", err);
+					// Even if clearing fails, try to refresh
+					window.location.reload();
+				});
+		}
+	}, [error, isHandlingAuthError]);
+
+	// If handling auth error, show a loading state
+	if (isAuthError(error)) {
+		return (
+			<div className="bg-white">
+				<div className="mx-auto max-w-7xl px-6 py-12">
+					<h1 className="text-2xl font-bold leading-10 tracking-tight text-neutral-800">
+						Session expired
+					</h1>
+					<p className="mt-6 max-w-2xl text-base leading-7 text-neutral-600">
+						Your session has expired. Refreshing the page...
+					</p>
+					<div className="mt-8">
+						<div className="h-2 w-48 animate-pulse rounded-full bg-neutral-200"></div>
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	const handleRetry = () => {
 		// Clear auth cookies as a safety net before retrying

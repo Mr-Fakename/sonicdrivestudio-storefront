@@ -6,18 +6,31 @@ import { CookiePreferencesButton } from "@/components/CookieConsent";
 import { DEFAULT_CHANNEL } from "@/app/config";
 
 export async function Footer() {
-	const footerLinks = await executeGraphQL(MenuGetBySlugDocument, {
-		variables: { slug: "footer", channel: DEFAULT_CHANNEL },
-		revalidate: 60 * 60 * 24,
-	});
-	const channels = process.env.SALEOR_APP_TOKEN
-		? await executeGraphQL(ChannelsListDocument, {
-				withAuth: false,
-				headers: {
-					Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
-				},
-			})
-		: null;
+	let footerLinks = null;
+	let channels = null;
+
+	try {
+		footerLinks = await executeGraphQL(MenuGetBySlugDocument, {
+			variables: { slug: "footer", channel: DEFAULT_CHANNEL },
+			revalidate: 60 * 60 * 24,
+		});
+	} catch (error) {
+		console.error("Failed to fetch footer menu:", error);
+	}
+
+	try {
+		channels = process.env.SALEOR_APP_TOKEN
+			? await executeGraphQL(ChannelsListDocument, {
+					withAuth: false,
+					headers: {
+						Authorization: `Bearer ${process.env.SALEOR_APP_TOKEN}`,
+					},
+				})
+			: null;
+	} catch (error) {
+		console.error("Failed to fetch channels:", error);
+	}
+
 	const currentYear = new Date().getFullYear();
 
 	return (

@@ -16,6 +16,7 @@ import { alertsContainerProps } from "./hooks/useAlerts/consts";
 import { RootViews } from "./views/RootViews";
 import { PageNotFound } from "@/checkout/views/PageNotFound";
 import { authErrorExchange } from "@/lib/urqlAuthErrorExchange";
+import { errorFilterExchange } from "./lib/errorFilterExchange";
 import "./index.css";
 
 export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
@@ -27,7 +28,7 @@ export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
 			suspense: true,
 			requestPolicy: "cache-first",
 			fetch: (input, init) => saleorAuthClient.fetchWithAuth(input as NodeJS.fetch.RequestInfo, init),
-			exchanges: [dedupExchange, cacheExchange, authErrorExchange, fetchExchange],
+			exchanges: [dedupExchange, cacheExchange, authErrorExchange, errorFilterExchange, fetchExchange],
 		});
 
 	const [urqlClient, setUrqlClient] = useState<Client>(makeUrqlClient());

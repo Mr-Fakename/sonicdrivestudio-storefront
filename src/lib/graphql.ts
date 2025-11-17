@@ -1,7 +1,6 @@
 import { invariant } from "ts-invariant";
 import { unstable_cache } from "next/cache";
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import { type TypedDocumentString } from "../gql/graphql";
 import { getServerAuthClient } from "@/app/config";
 
@@ -72,16 +71,12 @@ export async function executeGraphQL<Result, Variables>(
 			);
 
 			if (hasSignatureExpired) {
-				console.warn("[AUTH] JWT signature expired, clearing cookies and redirecting...");
+				console.warn("[AUTH] JWT signature expired, redirecting to clear session...");
 
-				// Clear auth cookies server-side
-				const cookieStore = await cookies();
-				cookieStore.delete("saleor-access-token");
-				cookieStore.delete("saleor-refresh-token");
-
-				// Redirect to current path to refresh the page with clean state
-				// This prevents the error page from showing
-				redirect("/");
+				// Redirect to route handler that clears cookies and redirects home
+				// We can't clear cookies here because Next.js only allows cookie
+				// modification in Server Actions or Route Handlers
+				redirect("/api/auth/clear-session");
 			}
 
 			throw new GraphQLError(body);

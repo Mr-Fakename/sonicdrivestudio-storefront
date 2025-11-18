@@ -13,6 +13,14 @@ function isAuthError(error: Error): boolean {
 	);
 }
 
+function isServerError(error: Error): boolean {
+	return (
+		error.message.includes("Failed to parse API response as JSON") ||
+		error.message.includes("The server returned an invalid response") ||
+		error.message.includes("HTTP error 500")
+	);
+}
+
 export default function Error({ error, reset }: { error: Error; reset: () => void }) {
 	const [isHandlingAuthError, setIsHandlingAuthError] = useState(false);
 
@@ -35,18 +43,39 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
 					window.location.reload();
 				});
 		}
+
+		// If this is a server error (like invalid JSON response), also clear cookies
+		// as it might be due to expired session causing API errors
+		if (isServerError(error) && !isHandlingAuthError) {
+			setIsHandlingAuthError(true);
+			console.log("Detected server error, clearing cookies and refreshing...");
+
+			clearInvalidAuthCookies()
+				.then(() => {
+					// Refresh the page to re-render with cleared cookies
+					window.location.reload();
+				})
+				.catch((err) => {
+					console.error("Failed to clear invalid cookies:", err);
+					// Even if clearing fails, try to refresh
+					window.location.reload();
+				});
+		}
 	}, [error, isHandlingAuthError]);
 
-	// If handling auth error, show a loading state
-	if (isAuthError(error)) {
+	// If handling auth or server error, show a loading state
+	if (isAuthError(error) || isServerError(error)) {
+		const isAuth = isAuthError(error);
 		return (
 			<div className="bg-white">
 				<div className="mx-auto max-w-7xl px-6 py-12">
 					<h1 className="text-2xl font-bold leading-10 tracking-tight text-neutral-800">
-						Session expired
+						{isAuth ? "Session expired" : "Server error detected"}
 					</h1>
 					<p className="mt-6 max-w-2xl text-base leading-7 text-neutral-600">
-						Your session has expired. Refreshing the page...
+						{isAuth
+							? "Your session has expired. Refreshing the page..."
+							: "A server error occurred. Clearing session and refreshing..."}
 					</p>
 					<div className="mt-8">
 						<div className="h-2 w-48 animate-pulse rounded-full bg-neutral-200"></div>

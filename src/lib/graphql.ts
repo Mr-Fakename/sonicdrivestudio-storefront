@@ -63,9 +63,16 @@ export async function executeGraphQL<Result, Variables>(
 
 				if (isAuthError) {
 					console.warn(
-						"Authentication error encountered, falling back to unauthenticated request:",
+						"[AUTH] Authentication error encountered, falling back to unauthenticated request:",
 						error instanceof Error ? error.message : error,
 					);
+
+					// If signature has expired, we should clear the session
+					if (error instanceof Error && error.message.includes("Signature has expired")) {
+						console.warn("[AUTH] JWT signature expired during fetch, redirecting to clear session...");
+						redirect("/api/auth/clear-session");
+					}
+
 					// Fall back to unauthenticated request when tokens are invalid/expired
 					response = await fetch(apiUrl, input);
 				} else {
@@ -88,7 +95,43 @@ export async function executeGraphQL<Result, Variables>(
 			throw new HTTPError(response, body);
 		}
 
-		const body = (await response.json()) as GraphQLRespone<Result>;
+		// Safely parse JSON response with error handling for non-JSON responses
+		let body: GraphQLRespone<Result>;
+		try {
+			// First check Content-Type header as a quick validation
+			const contentType = response.headers.get("content-type");
+			if (contentType && !contentType.includes("application/json")) {
+				console.warn("[GraphQL] Unexpected content type:", contentType);
+			}
+
+			// Attempt to parse as JSON
+			body = (await response.json()) as GraphQLRespone<Result>;
+		} catch (error) {
+			// If JSON parsing fails, it's likely HTML or other non-JSON content
+			if (error instanceof SyntaxError) {
+				// Clone the response to read it again (if not already consumed)
+				let bodyPreview = "Unable to read response body";
+				try {
+					// Response body can only be read once, so we can't get it here
+					// Log what we know from the error
+					bodyPreview = error.message;
+				} catch {
+					// Ignore
+				}
+
+				console.error("[GraphQL] Failed to parse JSON response:", {
+					status: response.status,
+					statusText: response.statusText,
+					contentType: response.headers.get("content-type"),
+					error: error.message,
+				});
+
+				throw new Error(
+					`Failed to parse API response as JSON. The server returned an invalid response (likely an error page). Status: ${response.status} ${response.statusText}`,
+				);
+			}
+			throw error;
+		}
 
 		if ("errors" in body) {
 			// Check for signature expiration errors

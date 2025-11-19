@@ -2,7 +2,28 @@
 
 import { useEffect, useState } from "react";
 import { clearInvalidAuthCookies } from "./actions";
-import { saleorAuthClient } from "@/ui/components/AuthProvider";
+
+/**
+ * Aggressively clear ALL cookies
+ * Safe to call since important data is stored in localStorage
+ */
+function clearAllCookies() {
+	console.log("[ERROR BOUNDARY] Clearing all cookies...");
+	const cookies = document.cookie.split(";");
+
+	for (let i = 0; i < cookies.length; i++) {
+		const cookie = cookies[i];
+		const eqPos = cookie.indexOf("=");
+		const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+
+		// Delete cookie for all possible paths and domains
+		document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+		document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=${window.location.hostname};`;
+		document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.${window.location.hostname};`;
+	}
+
+	console.log("[ERROR BOUNDARY] All cookies cleared. Remaining:", document.cookie);
+}
 
 function isAuthError(error: Error): boolean {
 	return (
@@ -91,22 +112,14 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
 
 	const handleRetry = () => {
 		console.log("[ERROR BOUNDARY] Retry button clicked");
-		console.log("[ERROR BOUNDARY] Current cookies before signOut:", document.cookie);
+		console.log("[ERROR BOUNDARY] Current cookies before clearing:", document.cookie);
 
-		// Properly sign out to clear authentication state
-		// This helps recover from stale authentication state
-		saleorAuthClient.signOut();
+		// Clear ALL cookies (safe since important data is in localStorage)
+		clearAllCookies();
 
-		console.log("[ERROR BOUNDARY] Cookies after signOut:", document.cookie);
-
-		// Try to reset the error boundary
-		reset();
-
-		// If reset doesn't work, force reload as fallback
-		setTimeout(() => {
-			console.log("[ERROR BOUNDARY] Forcing reload...");
-			window.location.reload();
-		}, 100);
+		// Force reload immediately
+		console.log("[ERROR BOUNDARY] Reloading page...");
+		window.location.reload();
 	};
 
 	return (

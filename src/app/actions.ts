@@ -13,20 +13,30 @@ export async function clearInvalidAuthCookies() {
 	"use server";
 	try {
 		const cookieStore = await cookies();
-		const authClient = await getServerAuthClient();
 
-		// Clear auth cookies using the SDK
-		await authClient.signOut();
+		// Get all cookies and delete them ALL (safe since important data is in localStorage)
+		const allCookies = cookieStore.getAll();
+		console.log(
+			`[SERVER ACTION] Clearing ${allCookies.length} cookies:`,
+			allCookies.map((c) => c.name).join(", "),
+		);
 
-		// Also clear checkout cookie if it might be corrupted
-		const checkoutCookieName = `checkoutId-${DEFAULT_CHANNEL}`;
-		if (cookieStore.has(checkoutCookieName)) {
-			cookieStore.delete(checkoutCookieName);
+		for (const cookie of allCookies) {
+			try {
+				cookieStore.delete({
+					name: cookie.name,
+					path: "/",
+				});
+				console.log(`[SERVER ACTION] Deleted cookie: ${cookie.name}`);
+			} catch (e) {
+				console.error(`[SERVER ACTION] Failed to delete cookie ${cookie.name}:`, e);
+			}
 		}
 
+		console.log("[SERVER ACTION] All cookies cleared");
 		return { success: true };
 	} catch (error) {
-		console.error("Failed to clear invalid cookies:", error);
+		console.error("[SERVER ACTION] Failed to clear invalid cookies:", error);
 		return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
 	}
 }

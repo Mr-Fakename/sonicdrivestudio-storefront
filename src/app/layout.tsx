@@ -85,7 +85,18 @@ export const metadata: Metadata = {
 			"max-snippet": -1,
 		},
 	},
-	// Icons are defined by icon.png and apple-icon.png in the app directory
+	icons: {
+		icon: [
+			{ url: "/favicon.ico", sizes: "any" },
+			{ url: "/icon.svg", type: "image/svg+xml" },
+			{ url: "/icon.png", type: "image/png", sizes: "512x512" },
+		],
+		apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+		other: [
+			{ rel: "icon", url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+			{ rel: "icon", url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+		],
+	},
 	manifest: "/site.webmanifest",
 	verification: {
 		// Add your verification codes here

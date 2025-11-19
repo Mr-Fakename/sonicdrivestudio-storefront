@@ -1,7 +1,7 @@
 {
-	"name": "Your Store - Premium E-commerce",
-	"short_name": "Your Store",
-	"description": "Discover premium products with fast shipping and exceptional customer service",
+	"name": "Sonic Drive Studio - Premium Guitar Tones",
+	"short_name": "Sonic Drive",
+	"description": "High-quality cab impulse responses and amp captures for professional guitar tones. Perfect for rock, metal, and all genres.",
 	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#121212",
@@ -21,7 +21,7 @@
 			"purpose": "any maskable"
 		}
 	],
-	"categories": ["shopping", "business"],
+	"categories": ["shopping", "business", "music", "entertainment"],
 	"dir": "ltr",
 	"lang": "en-US",
 	"scope": "/",

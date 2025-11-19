@@ -1,6 +1,27 @@
 import { type Exchange } from "urql";
 import { pipe, tap } from "wonka";
-import { saleorAuthClient } from "@/ui/components/AuthProvider";
+
+/**
+ * Aggressively clear ALL cookies
+ * Safe to call since important data is stored in localStorage
+ */
+function clearAllCookies() {
+	console.log("[AUTH] Clearing all cookies...");
+	const cookies = document.cookie.split(";");
+
+	for (let i = 0; i < cookies.length; i++) {
+		const cookie = cookies[i];
+		const eqPos = cookie.indexOf("=");
+		const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+
+		// Delete cookie for all possible paths and domains
+		document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+		document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=${window.location.hostname};`;
+		document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.${window.location.hostname};`;
+	}
+
+	console.log("[AUTH] All cookies cleared. Remaining:", document.cookie);
+}
 
 /**
  * URQL error exchange that handles JWT signature expiration errors
@@ -39,18 +60,11 @@ export const authErrorExchange: Exchange =
 					console.warn("[AUTH] JWT signature expired (client-side), logging out user...");
 					console.log("[AUTH] Current cookies before logout:", document.cookie);
 
-					// Properly sign out through the auth SDK
-					// This will trigger onSignedOut callback and clean up all auth state
-					saleorAuthClient.signOut();
+					// Clear ALL cookies (safe since important data is in localStorage)
+					clearAllCookies();
 
-					console.log("[AUTH] Cookies after signOut:", document.cookie);
-					console.log("[AUTH] Redirecting to home page in 1 second...");
-
-					// Redirect to home page after brief delay to allow signOut to complete
-					setTimeout(() => {
-						console.log("[AUTH] Executing redirect...");
-						window.location.href = "/";
-					}, 1000);
+					console.log("[AUTH] Redirecting to home page immediately...");
+					window.location.href = "/";
 				}
 			}),
 		);

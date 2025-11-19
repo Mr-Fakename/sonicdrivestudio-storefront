@@ -63,17 +63,18 @@ export async function executeGraphQL<Result, Variables>(
 
 				if (isAuthError) {
 					console.warn(
-						"[AUTH] Authentication error encountered, falling back to unauthenticated request:",
+						"[AUTH GRAPHQL] Authentication error encountered during fetchWithAuth:",
 						error instanceof Error ? error.message : error,
 					);
 
 					// If signature has expired, we should clear the session
 					if (error instanceof Error && error.message.includes("Signature has expired")) {
-						console.warn("[AUTH] JWT signature expired during fetch, redirecting to clear session...");
+						console.warn("[AUTH GRAPHQL] JWT signature expired during fetch, redirecting to /api/auth/clear-session to logout user...");
 						redirect("/api/auth/clear-session");
 					}
 
 					// Fall back to unauthenticated request when tokens are invalid/expired
+					console.warn("[AUTH GRAPHQL] Falling back to unauthenticated request...");
 					response = await fetch(apiUrl, input);
 				} else {
 					throw error;
@@ -140,7 +141,7 @@ export async function executeGraphQL<Result, Variables>(
 			);
 
 			if (hasSignatureExpired) {
-				console.warn("[AUTH] JWT signature expired, redirecting to clear session...");
+				console.warn("[AUTH GRAPHQL] JWT signature expired in GraphQL response, redirecting to /api/auth/clear-session to logout user...");
 
 				// Redirect to route handler that clears cookies and redirects home
 				// We can't clear cookies here because Next.js only allows cookie

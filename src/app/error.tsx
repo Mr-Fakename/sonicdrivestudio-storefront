@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { clearInvalidAuthCookies } from "./actions";
+import { saleorAuthClient } from "@/ui/components/AuthProvider";
 
 function isAuthError(error: Error): boolean {
 	return (
@@ -25,20 +26,22 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
 	const [isHandlingAuthError, setIsHandlingAuthError] = useState(false);
 
 	useEffect(() => {
-		console.error(error);
+		console.error("[ERROR BOUNDARY] Error caught:", error);
 
 		// If this is an authentication error, automatically clear cookies and refresh
 		if (isAuthError(error) && !isHandlingAuthError) {
 			setIsHandlingAuthError(true);
-			console.log("Detected authentication error, clearing invalid cookies and refreshing...");
+			console.log("[ERROR BOUNDARY] Detected authentication error, clearing invalid cookies and refreshing...");
+			console.log("[ERROR BOUNDARY] Current cookies:", document.cookie);
 
 			clearInvalidAuthCookies()
 				.then(() => {
+					console.log("[ERROR BOUNDARY] Cookies cleared, reloading page...");
 					// Refresh the page to re-render with cleared cookies
 					window.location.reload();
 				})
 				.catch((err) => {
-					console.error("Failed to clear invalid cookies:", err);
+					console.error("[ERROR BOUNDARY] Failed to clear invalid cookies:", err);
 					// Even if clearing fails, try to refresh
 					window.location.reload();
 				});
@@ -48,15 +51,16 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
 		// as it might be due to expired session causing API errors
 		if (isServerError(error) && !isHandlingAuthError) {
 			setIsHandlingAuthError(true);
-			console.log("Detected server error, clearing cookies and refreshing...");
+			console.log("[ERROR BOUNDARY] Detected server error, clearing cookies and refreshing...");
 
 			clearInvalidAuthCookies()
 				.then(() => {
+					console.log("[ERROR BOUNDARY] Cookies cleared, reloading page...");
 					// Refresh the page to re-render with cleared cookies
 					window.location.reload();
 				})
 				.catch((err) => {
-					console.error("Failed to clear invalid cookies:", err);
+					console.error("[ERROR BOUNDARY] Failed to clear invalid cookies:", err);
 					// Even if clearing fails, try to refresh
 					window.location.reload();
 				});
@@ -86,18 +90,21 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
 	}
 
 	const handleRetry = () => {
-		// Clear auth cookies as a safety net before retrying
+		console.log("[ERROR BOUNDARY] Retry button clicked");
+		console.log("[ERROR BOUNDARY] Current cookies before signOut:", document.cookie);
+
+		// Properly sign out to clear authentication state
 		// This helps recover from stale authentication state
-		const authCookies = ["saleor-access-token", "saleor-refresh-token"];
-		authCookies.forEach((cookieName) => {
-			document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
-		});
+		saleorAuthClient.signOut();
+
+		console.log("[ERROR BOUNDARY] Cookies after signOut:", document.cookie);
 
 		// Try to reset the error boundary
 		reset();
 
 		// If reset doesn't work, force reload as fallback
 		setTimeout(() => {
+			console.log("[ERROR BOUNDARY] Forcing reload...");
 			window.location.reload();
 		}, 100);
 	};

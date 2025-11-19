@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { clearInvalidAuthCookies } from "./actions";
+import { saleorAuthClient } from "@/ui/components/AuthProvider";
 
 function isAuthError(error: Error): boolean {
 	return (
@@ -86,12 +87,9 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
 	}
 
 	const handleRetry = () => {
-		// Clear auth cookies as a safety net before retrying
+		// Properly sign out to clear authentication state
 		// This helps recover from stale authentication state
-		const authCookies = ["saleor-access-token", "saleor-refresh-token"];
-		authCookies.forEach((cookieName) => {
-			document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
-		});
+		void saleorAuthClient.signOut();
 
 		// Try to reset the error boundary
 		reset();

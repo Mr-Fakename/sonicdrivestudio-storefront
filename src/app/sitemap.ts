@@ -1,6 +1,6 @@
 import { type MetadataRoute } from "next";
 import { executeGraphQL } from "@/lib/graphql";
-import { ProductListDocument } from "@/gql/graphql";
+import { ProductListDocument, ProductOrderField, OrderDirection } from "@/gql/graphql";
 import { DEFAULT_CHANNEL } from "@/app/config";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -8,7 +8,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 	// Fetch products
 	const { products } = await executeGraphQL(ProductListDocument, {
-		variables: { first: 100, channel: DEFAULT_CHANNEL },
+		variables: {
+			first: 100,
+			channel: DEFAULT_CHANNEL,
+			sortBy: ProductOrderField.CreatedAt,
+			sortDirection: OrderDirection.Desc,
+		},
 		revalidate: 60 * 60 * 24, // 24 hours
 		withAuth: false,
 		tags: ["sitemap", "products"],

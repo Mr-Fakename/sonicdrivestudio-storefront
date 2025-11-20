@@ -10,7 +10,13 @@ import { VariantSelector } from "@/ui/components/VariantSelector";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
 import { executeGraphQL } from "@/lib/graphql";
 import { formatMoney, formatMoneyRange } from "@/lib/utils";
-import { CheckoutAddLineDocument, ProductDetailsDocument, ProductListDocument } from "@/gql/graphql";
+import {
+	CheckoutAddLineDocument,
+	ProductDetailsDocument,
+	ProductListDocument,
+	ProductOrderField,
+	OrderDirection,
+} from "@/gql/graphql";
 import * as Checkout from "@/lib/checkout";
 import { AvailabilityMessage } from "@/ui/components/AvailabilityMessage";
 import { parseEditorJsToHTML } from "@/lib/editorjs/parser";
@@ -95,7 +101,12 @@ export async function generateMetadata(
 export async function generateStaticParams() {
 	const { products } = await executeGraphQL(ProductListDocument, {
 		revalidate: 60,
-		variables: { first: 20, channel: DEFAULT_CHANNEL },
+		variables: {
+			first: 20,
+			channel: DEFAULT_CHANNEL,
+			sortBy: ProductOrderField.CreatedAt,
+			sortDirection: OrderDirection.Desc,
+		},
 		withAuth: false,
 	});
 

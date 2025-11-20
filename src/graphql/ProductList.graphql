@@ -1,5 +1,5 @@
-query ProductList($first: Int = 9, $channel: String!) {
-	products(first: $first, channel: $channel) {
+query ProductList($first: Int = 9, $channel: String!, $sortBy: ProductOrderField!, $sortDirection: OrderDirection!) {
+	products(first: $first, channel: $channel, sortBy: { field: $sortBy, direction: $sortDirection }) {
 		edges {
 			node {
 				...ProductListItem

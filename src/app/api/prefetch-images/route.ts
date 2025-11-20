@@ -5,6 +5,8 @@ import {
 	ProductListDocument,
 	ProductListByCategoryDocument,
 	ProductListByCollectionDocument,
+	ProductOrderField,
+	OrderDirection,
 } from "@/gql/graphql";
 import { DEFAULT_CHANNEL } from "@/app/config";
 
@@ -49,7 +51,12 @@ export async function GET(request: NextRequest) {
 			const slug = decodeURIComponent(categoryMatch[1]);
 
 			const { category } = await executeGraphQL(ProductListByCategoryDocument, {
-				variables: { slug, channel: DEFAULT_CHANNEL },
+				variables: {
+					slug,
+					channel: DEFAULT_CHANNEL,
+					sortBy: ProductOrderField.CreatedAt,
+					sortDirection: OrderDirection.Desc,
+				},
 				revalidate: 60,
 				withAuth: false,
 			});
@@ -70,7 +77,12 @@ export async function GET(request: NextRequest) {
 			const slug = decodeURIComponent(collectionMatch[1]);
 
 			const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
-				variables: { slug, channel: DEFAULT_CHANNEL },
+				variables: {
+					slug,
+					channel: DEFAULT_CHANNEL,
+					sortBy: ProductOrderField.CreatedAt,
+					sortDirection: OrderDirection.Desc,
+				},
 				revalidate: 60,
 				withAuth: false,
 			});
@@ -88,7 +100,12 @@ export async function GET(request: NextRequest) {
 		// For product listing pages, prefetch from general product list
 		if (pathname.includes("/products")) {
 			const { products } = await executeGraphQL(ProductListDocument, {
-				variables: { first: 12, channel: DEFAULT_CHANNEL },
+				variables: {
+					first: 12,
+					channel: DEFAULT_CHANNEL,
+					sortBy: ProductOrderField.CreatedAt,
+					sortDirection: OrderDirection.Desc,
+				},
 				revalidate: 60,
 				withAuth: false,
 			});

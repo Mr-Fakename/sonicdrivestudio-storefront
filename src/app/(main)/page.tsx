@@ -1,4 +1,4 @@
-import { ProductListByCollectionDocument, PageGetBySlugDocument } from "@/gql/graphql";
+import { ProductListByCollectionDocument, PageGetBySlugDocument, ProductOrderField, OrderDirection } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { ProductList } from "@/ui/components/ProductList";
 import { DEFAULT_CHANNEL } from "@/app/config";
@@ -19,6 +19,8 @@ export default async function Page() {
 		variables: {
 			slug: "featured",
 			channel: DEFAULT_CHANNEL,
+			sortBy: ProductOrderField.CreatedAt,
+			sortDirection: OrderDirection.Desc,
 		},
 		revalidate: 60,
 		withAuth: false,

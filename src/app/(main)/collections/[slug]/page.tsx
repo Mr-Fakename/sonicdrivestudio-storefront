@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { type ResolvingMetadata, type Metadata } from "next";
 import { Suspense } from "react";
-import { ProductListByCollectionDocument } from "@/gql/graphql";
+import { ProductListByCollectionDocument, ProductOrderField, OrderDirection } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { ProductList } from "@/ui/components/ProductList";
 import { ProductListSkeleton } from "@/ui/atoms/SkeletonLoader";
@@ -15,7 +15,12 @@ export const generateMetadata = async (
 ): Promise<Metadata> => {
 	const params = await props.params;
 	const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
-		variables: { slug: params.slug, channel: DEFAULT_CHANNEL },
+		variables: {
+			slug: params.slug,
+			channel: DEFAULT_CHANNEL,
+			sortBy: ProductOrderField.CreatedAt,
+			sortDirection: OrderDirection.Desc,
+		},
 		revalidate: 60,
 	});
 
@@ -29,7 +34,12 @@ export const generateMetadata = async (
 export default async function Page(props: { params: Promise<{ slug: string }> }) {
 	const params = await props.params;
 	const { collection } = await executeGraphQL(ProductListByCollectionDocument, {
-		variables: { slug: params.slug, channel: DEFAULT_CHANNEL },
+		variables: {
+			slug: params.slug,
+			channel: DEFAULT_CHANNEL,
+			sortBy: ProductOrderField.CreatedAt,
+			sortDirection: OrderDirection.Desc,
+		},
 		revalidate: 60,
 	});
 

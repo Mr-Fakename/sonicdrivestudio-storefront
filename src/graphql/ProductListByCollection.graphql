@@ -1,10 +1,10 @@
-query ProductListByCollection($slug: String!, $channel: String!) {
+query ProductListByCollection($slug: String!, $channel: String!, $sortBy: ProductOrderField!, $sortDirection: OrderDirection!) {
 	collection(slug: $slug, channel: $channel) {
 		name
 		description
 		seoDescription
 		seoTitle
-		products(first: 100) {
+		products(first: 100, sortBy: { field: $sortBy, direction: $sortDirection }) {
 			edges {
 				node {
 					...ProductListItem

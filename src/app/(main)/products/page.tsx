@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ProductListPaginatedDocument } from "@/gql/graphql";
+import { ProductListPaginatedDocument, ProductOrderField, OrderDirection } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { Pagination } from "@/ui/components/Pagination";
 import { ProductList } from "@/ui/components/ProductList";
@@ -24,6 +24,8 @@ export default async function Page(props: {
 			first: ProductsPerPage,
 			after: cursor,
 			channel: DEFAULT_CHANNEL,
+			sortBy: ProductOrderField.CreatedAt,
+			sortDirection: OrderDirection.Desc,
 		},
 		revalidate: 60,
 	});

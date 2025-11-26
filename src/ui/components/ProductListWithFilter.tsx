@@ -3,38 +3,10 @@
 import { useSearchParams } from "next/navigation";
 import { ProductList } from "./ProductList";
 import { ProductFilter, type FilterOption } from "./ProductFilter";
-
-// Type definitions for product with variants and attributes
-interface AttributeValue {
-	id: string;
-	name?: string | null;
-}
-
-interface Attribute {
-	attribute: {
-		id: string;
-		name?: string | null;
-		slug?: string | null;
-	};
-	values: AttributeValue[];
-}
-
-interface ProductVariant {
-	id: string;
-	name: string;
-	attributes?: Attribute[] | null;
-}
-
-interface Product {
-	id: string;
-	name: string;
-	slug: string;
-	variants?: ProductVariant[] | null;
-	[key: string]: unknown;
-}
+import type { ProductListItemFragment } from "@/gql/graphql";
 
 interface ProductListWithFilterProps {
-	products: readonly Product[];
+	products: readonly ProductListItemFragment[];
 	attributeSlug?: string;
 	filterTitle?: string;
 }
@@ -43,7 +15,7 @@ interface ProductListWithFilterProps {
  * Extracts unique attribute values from products' variants
  */
 function extractAttributeValues(
-	products: readonly Product[],
+	products: readonly ProductListItemFragment[],
 	attributeSlug: string,
 ): FilterOption[] {
 	const valueCounts = new Map<string, { label: string; count: number }>();
@@ -88,7 +60,7 @@ function extractAttributeValues(
  * Checks if a product has a variant with the specified attribute value
  */
 function productHasAttributeValue(
-	product: Product,
+	product: ProductListItemFragment,
 	attributeSlug: string,
 	targetValue: string,
 ): boolean {

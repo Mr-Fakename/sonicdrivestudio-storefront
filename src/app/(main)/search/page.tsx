@@ -12,12 +12,11 @@ export const metadata = {
 };
 
 export default async function Page(props: {
-	searchParams: Promise<Record<"query" | "cursor" | "after" | "before" | "page", string | string[] | undefined>>;
+	searchParams: Promise<Record<"query" | "cursor" | "after" | "page", string | string[] | undefined>>;
 }) {
 	const searchParams = await props.searchParams;
 	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
 	const after = typeof searchParams.after === "string" ? searchParams.after : null;
-	const before = typeof searchParams.before === "string" ? searchParams.before : null;
 	const pageParam = typeof searchParams.page === "string" ? parseInt(searchParams.page, 10) : 1;
 	const searchValue = searchParams.query;
 
@@ -68,7 +67,7 @@ export default async function Page(props: {
 							...products.pageInfo,
 							basePathname: `/search`,
 							urlSearchParams: newSearchParams,
-							totalCount: products.totalCount,
+							totalCount: products.totalCount ?? undefined,
 							currentPage,
 							pageSize: ProductsPerPage,
 						}}

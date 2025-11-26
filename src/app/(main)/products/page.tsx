@@ -17,14 +17,12 @@ export default async function Page(props: {
 	searchParams: Promise<{
 		cursor: string | string[] | undefined;
 		after: string | string[] | undefined;
-		before: string | string[] | undefined;
 		page: string | string[] | undefined;
 	}>;
 }) {
 	const searchParams = await props.searchParams;
 	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
 	const after = typeof searchParams.after === "string" ? searchParams.after : null;
-	const before = typeof searchParams.before === "string" ? searchParams.before : null;
 	const pageParam = typeof searchParams.page === "string" ? parseInt(searchParams.page, 10) : 1;
 
 	const { products } = await executeGraphQL(ProductListPaginatedDocument, {
@@ -61,7 +59,7 @@ export default async function Page(props: {
 					...products.pageInfo,
 					basePathname: `/products`,
 					urlSearchParams: newSearchParams,
-					totalCount: products.totalCount,
+					totalCount: products.totalCount ?? undefined,
 					currentPage,
 					pageSize: ProductsPerPage,
 				}}

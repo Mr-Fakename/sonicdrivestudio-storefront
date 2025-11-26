@@ -17,7 +17,7 @@ export const ProductImageWrapper = (props: ImageProps) => {
 	// Based on max-w-7xl container (1280px) with p-8 padding and gap-8
 	const defaultSizes = "(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 384px";
 
-	const handleError = () => {
+	const handleError = (error: React.SyntheticEvent<HTMLImageElement, Event>) => {
 		if (retryCount < MAX_RETRIES) {
 			// Retry with cache-busting timestamp
 			const separator = currentSrc.toString().includes("?") ? "&" : "?";
@@ -27,14 +27,14 @@ export const ProductImageWrapper = (props: ImageProps) => {
 		} else {
 			setHasError(true);
 			setIsLoading(false);
-			onError?.();
+			onError?.(error);
 		}
 	};
 
-	const handleLoad = () => {
+	const handleLoad = (result: React.SyntheticEvent<HTMLImageElement, Event>) => {
 		setIsLoading(false);
 		setHasError(false);
-		onLoad?.();
+		onLoad?.(result);
 	};
 
 	return (

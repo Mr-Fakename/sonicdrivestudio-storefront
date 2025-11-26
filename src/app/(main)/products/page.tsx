@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { ProductListPaginatedDocument, ProductOrderField, OrderDirection } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { Pagination } from "@/ui/components/Pagination";
-import { ProductList } from "@/ui/components/ProductList";
+import { ProductListWithFilter } from "@/ui/components/ProductListWithFilter";
+import { ProductListSkeleton } from "@/ui/atoms/SkeletonLoader";
 import { ProductsPerPage, DEFAULT_CHANNEL } from "@/app/config";
 import { SITE_CONFIG } from "@/lib/constants";
 
@@ -40,8 +42,10 @@ export default async function Page(props: {
 
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">
-			<h2 className="sr-only">Product list</h2>
-			<ProductList products={products.edges.map((e) => e.node)} />
+			<h1 className="pb-8 text-xl font-semibold">All Products</h1>
+			<Suspense fallback={<ProductListSkeleton />}>
+				<ProductListWithFilter products={products.edges.map((e) => e.node)} />
+			</Suspense>
 			<Pagination
 				pageInfo={{
 					...products.pageInfo,

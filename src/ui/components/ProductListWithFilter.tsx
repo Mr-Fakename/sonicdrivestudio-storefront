@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { ProductList } from "./ProductList";
 import { ProductFilter, type FilterOption } from "./ProductFilter";
-import { PriceRangeFilter } from "./PriceRangeFilter";
+import { ProductSort } from "./ProductSort";
 import type { ProductListItemFragment } from "@/gql/graphql";
 
 interface ProductListWithFilterProps {
@@ -85,31 +85,28 @@ function getProductPrice(product: ProductListItemFragment): number {
 }
 
 /**
- * Extracts min and max prices from products
+ * Sorts products based on the selected sort option
  */
-function getPriceRange(products: readonly ProductListItemFragment[]): { min: number; max: number } {
-	if (products.length === 0) return { min: 0, max: 0 };
+function sortProducts(
+	products: readonly ProductListItemFragment[],
+	sortBy: string,
+): ProductListItemFragment[] {
+	const sorted = [...products];
 
-	let min = Infinity;
-	let max = -Infinity;
-
-	products.forEach((product) => {
-		const price = getProductPrice(product);
-		if (price > 0) {
-			min = Math.min(min, price);
-			max = Math.max(max, price);
-		}
-	});
-
-	return { min: min === Infinity ? 0 : min, max: max === -Infinity ? 0 : max };
-}
-
-/**
- * Checks if a product's price falls within the specified range
- */
-function productInPriceRange(product: ProductListItemFragment, min: number, max: number): boolean {
-	const price = getProductPrice(product);
-	return price >= min && price <= max;
+	switch (sortBy) {
+		case "name-asc":
+			return sorted.sort((a, b) => a.name.localeCompare(b.name));
+		case "name-desc":
+			return sorted.sort((a, b) => b.name.localeCompare(a.name));
+		case "price-asc":
+			return sorted.sort((a, b) => getProductPrice(a) - getProductPrice(b));
+		case "price-desc":
+			return sorted.sort((a, b) => getProductPrice(b) - getProductPrice(a));
+		case "updated":
+		default:
+			// Default sort (already sorted by lastModifiedAt from server)
+			return sorted;
+	}
 }
 
 /**
@@ -126,25 +123,11 @@ export function ProductListWithFilter({
 	// Extract unique attribute values for filter options
 	const filterOptions = extractAttributeValues(products, attributeSlug);
 
-	// Get price range from all products
-	const priceRange = getPriceRange(products);
-
-	// Get selected filters from URL
+	// Get selected filters and sort from URL
 	const selectedFilters = searchParams.get(attributeSlug)?.split(",").filter(Boolean) || [];
-	const selectedPriceRange = searchParams.get("price");
+	const sortBy = searchParams.get("sort") || "updated";
 
-	// Parse price range
-	let priceMin = 0;
-	let priceMax = Infinity;
-	if (selectedPriceRange) {
-		const [min, max] = selectedPriceRange.split("-").map(Number);
-		if (!isNaN(min) && !isNaN(max)) {
-			priceMin = min;
-			priceMax = max;
-		}
-	}
-
-	// Filter products based on selected values and price
+	// Filter products based on selected values
 	let filteredProducts = products;
 
 	// Apply attribute filter
@@ -154,30 +137,26 @@ export function ProductListWithFilter({
 		);
 	}
 
-	// Apply price filter
-	if (selectedPriceRange) {
-		filteredProducts = filteredProducts.filter((product) => productInPriceRange(product, priceMin, priceMax));
-	}
+	// Apply sorting
+	const sortedProducts = sortProducts(filteredProducts, sortBy);
 
 	return (
 		<>
-			{/* Filter UI */}
-			<div className="mb-6 flex flex-wrap gap-3">
+			{/* Filter and Sort UI */}
+			<div className="mb-6 flex flex-wrap items-start gap-3">
 				{filterOptions.length > 0 && (
 					<div className="w-full sm:w-auto sm:min-w-[200px]">
 						<ProductFilter options={filterOptions} filterName={attributeSlug} title={filterTitle} />
 					</div>
 				)}
-				{priceRange.max > priceRange.min && (
-					<div className="w-full sm:w-auto sm:min-w-[200px]">
-						<PriceRangeFilter minPrice={priceRange.min} maxPrice={priceRange.max} />
-					</div>
-				)}
+				<div className="ml-auto">
+					<ProductSort />
+				</div>
 			</div>
 
 			{/* Product List */}
-			{filteredProducts.length > 0 ? (
-				<ProductList products={filteredProducts} />
+			{sortedProducts.length > 0 ? (
+				<ProductList products={sortedProducts} />
 			) : (
 				<div className="flex min-h-[200px] items-center justify-center rounded-lg border border-base-800 bg-base-900/50 p-8 text-center">
 					<div>

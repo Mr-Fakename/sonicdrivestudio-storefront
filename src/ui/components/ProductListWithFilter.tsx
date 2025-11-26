@@ -13,8 +13,8 @@ interface AttributeValue {
 interface Attribute {
 	attribute: {
 		id: string;
-		name: string;
-		slug: string;
+		name?: string | null;
+		slug?: string | null;
 	};
 	values: AttributeValue[];
 }
@@ -22,14 +22,14 @@ interface Attribute {
 interface ProductVariant {
 	id: string;
 	name: string;
-	attributes?: Attribute[];
+	attributes?: Attribute[] | null;
 }
 
 interface Product {
 	id: string;
 	name: string;
 	slug: string;
-	variants?: ProductVariant[];
+	variants?: ProductVariant[] | null;
 	[key: string]: unknown;
 }
 
@@ -58,7 +58,7 @@ function extractAttributeValues(
 			if (!variant.attributes) return;
 
 			variant.attributes.forEach((attr) => {
-				if (attr.attribute.slug === attributeSlug) {
+				if (attr.attribute.slug && attr.attribute.slug === attributeSlug) {
 					attr.values.forEach((value) => {
 						const key = value.name;
 						if (!countedForProduct.has(key)) {
@@ -97,7 +97,7 @@ function productHasAttributeValue(
 		if (!variant.attributes) return false;
 
 		return variant.attributes.some((attr) => {
-			if (attr.attribute.slug !== attributeSlug) return false;
+			if (!attr.attribute.slug || attr.attribute.slug !== attributeSlug) return false;
 			return attr.values.some((value) => value.name === targetValue);
 		});
 	});

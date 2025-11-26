@@ -3,7 +3,7 @@ import { type ResolvingMetadata, type Metadata } from "next";
 import { Suspense } from "react";
 import { ProductListByCollectionDocument, ProductOrderField, OrderDirection } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
-import { ProductList } from "@/ui/components/ProductList";
+import { ProductListWithFilter } from "@/ui/components/ProductListWithFilter";
 import { ProductListSkeleton } from "@/ui/atoms/SkeletonLoader";
 import { DEFAULT_CHANNEL } from "@/app/config";
 
@@ -54,9 +54,9 @@ export default async function Page(props: { params: Promise<{ slug: string }> })
 			{/* Static: Collection title - prerendered with PPR */}
 			<h1 className="pb-8 text-xl font-semibold">{name}</h1>
 
-			{/* Dynamic: Product list - streamed with Suspense */}
+			{/* Dynamic: Product list with filter - streamed with Suspense */}
 			<Suspense fallback={<ProductListSkeleton />}>
-				<ProductList products={products.edges.map((e) => e.node)} />
+				<ProductListWithFilter products={products.edges.map((e) => e.node)} />
 			</Suspense>
 		</div>
 	);

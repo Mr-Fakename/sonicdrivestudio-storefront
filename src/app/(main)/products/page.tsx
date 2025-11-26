@@ -15,20 +15,20 @@ export const metadata = {
 
 export default async function Page(props: {
 	searchParams: Promise<{
-		cursor: string | string[] | undefined;
-		after: string | string[] | undefined;
-		page: string | string[] | undefined;
+		cursor?: string | string[];
+		page?: string | string[];
+		prevCursor?: string | string[];
 	}>;
 }) {
 	const searchParams = await props.searchParams;
 	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
-	const after = typeof searchParams.after === "string" ? searchParams.after : null;
+	const prevCursor = typeof searchParams.prevCursor === "string" ? searchParams.prevCursor : null;
 	const pageParam = typeof searchParams.page === "string" ? parseInt(searchParams.page, 10) : 1;
 
 	const { products } = await executeGraphQL(ProductListPaginatedDocument, {
 		variables: {
 			first: ProductsPerPage,
-			after: after || cursor,
+			after: cursor,
 			channel: DEFAULT_CHANNEL,
 			sortBy: ProductOrderField.LastModifiedAt,
 			sortDirection: OrderDirection.Desc,
@@ -40,13 +40,19 @@ export default async function Page(props: {
 		notFound();
 	}
 
-	// Calculate current page based on total count and page size
-	// Note: This is approximate since cursor-based pagination doesn't have exact pages
-	const currentPage = pageParam || 1;
+	const currentPage = pageParam;
 
-	const newSearchParams = new URLSearchParams({
-		...(products.pageInfo.endCursor && { cursor: products.pageInfo.endCursor }),
-	});
+	// Build search params to pass to pagination
+	const paginationSearchParams = new URLSearchParams();
+	if (cursor) {
+		paginationSearchParams.set("cursor", cursor);
+	}
+	if (prevCursor) {
+		paginationSearchParams.set("prevCursor", prevCursor);
+	}
+	if (pageParam > 1) {
+		paginationSearchParams.set("page", String(pageParam));
+	}
 
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">
@@ -58,10 +64,11 @@ export default async function Page(props: {
 				pageInfo={{
 					...products.pageInfo,
 					basePathname: `/products`,
-					urlSearchParams: newSearchParams,
+					urlSearchParams: paginationSearchParams,
 					totalCount: products.totalCount ?? undefined,
 					currentPage,
 					pageSize: ProductsPerPage,
+					prevCursor,
 				}}
 			/>
 		</section>

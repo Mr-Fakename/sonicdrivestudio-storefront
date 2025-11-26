@@ -12,11 +12,16 @@ export const metadata = {
 };
 
 export default async function Page(props: {
-	searchParams: Promise<Record<"query" | "cursor" | "after" | "page", string | string[] | undefined>>;
+	searchParams: Promise<{
+		query?: string | string[];
+		cursor?: string | string[];
+		page?: string | string[];
+		prevCursor?: string | string[];
+	}>;
 }) {
 	const searchParams = await props.searchParams;
 	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
-	const after = typeof searchParams.after === "string" ? searchParams.after : null;
+	const prevCursor = typeof searchParams.prevCursor === "string" ? searchParams.prevCursor : null;
 	const pageParam = typeof searchParams.page === "string" ? parseInt(searchParams.page, 10) : 1;
 	const searchValue = searchParams.query;
 
@@ -36,7 +41,7 @@ export default async function Page(props: {
 		variables: {
 			first: ProductsPerPage,
 			search: searchValue,
-			after: after || cursor,
+			after: cursor,
 			sortBy: ProductOrderField.Rating,
 			sortDirection: OrderDirection.Asc,
 			channel: DEFAULT_CHANNEL,
@@ -48,13 +53,20 @@ export default async function Page(props: {
 		notFound();
 	}
 
-	// Calculate current page based on total count and page size
-	const currentPage = pageParam || 1;
+	const currentPage = pageParam;
 
-	const newSearchParams = new URLSearchParams({
-		query: searchValue,
-		...(products.pageInfo.endCursor && { cursor: products.pageInfo.endCursor }),
-	});
+	// Build search params to pass to pagination
+	const paginationSearchParams = new URLSearchParams();
+	paginationSearchParams.set("query", searchValue);
+	if (cursor) {
+		paginationSearchParams.set("cursor", cursor);
+	}
+	if (prevCursor) {
+		paginationSearchParams.set("prevCursor", prevCursor);
+	}
+	if (pageParam > 1) {
+		paginationSearchParams.set("page", String(pageParam));
+	}
 
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">
@@ -66,10 +78,11 @@ export default async function Page(props: {
 						pageInfo={{
 							...products.pageInfo,
 							basePathname: `/search`,
-							urlSearchParams: newSearchParams,
+							urlSearchParams: paginationSearchParams,
 							totalCount: products.totalCount ?? undefined,
 							currentPage,
 							pageSize: ProductsPerPage,
+							prevCursor,
 						}}
 					/>
 				</div>

@@ -7,7 +7,7 @@ import { ProductFilter, type FilterOption } from "./ProductFilter";
 // Type definitions for product with variants and attributes
 interface AttributeValue {
 	id: string;
-	name: string;
+	name?: string | null;
 }
 
 interface Attribute {
@@ -60,6 +60,7 @@ function extractAttributeValues(
 			variant.attributes.forEach((attr) => {
 				if (attr.attribute.slug && attr.attribute.slug === attributeSlug) {
 					attr.values.forEach((value) => {
+						if (!value.name) return;
 						const key = value.name;
 						if (!countedForProduct.has(key)) {
 							const existing = valueCounts.get(key);

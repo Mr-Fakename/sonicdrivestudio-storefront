@@ -19,7 +19,7 @@ const CACHE_STRATEGIES = {
 // Route strategies
 const ROUTE_STRATEGIES = [
 	{ pattern: /\.(woff2|woff|ttf|eot)$/, strategy: CACHE_STRATEGIES.CACHE_FIRST },
-	{ pattern: /\.(png|jpg|jpeg|svg|gif|webp|avif)$/, strategy: CACHE_STRATEGIES.STALE_WHILE_REVALIDATE },
+	{ pattern: /\.(png|jpg|jpeg|svg|gif|webp|avif)$/, strategy: CACHE_STRATEGIES.NETWORK_FIRST },
 	{ pattern: /\/api\//, strategy: CACHE_STRATEGIES.NETWORK_FIRST },
 	{ pattern: /\/_next\/static\//, strategy: CACHE_STRATEGIES.CACHE_FIRST },
 ];
@@ -127,6 +127,10 @@ async function networkFirst(request) {
 		const response = await fetch(request);
 		if (response.ok) {
 			cache.put(request, response.clone());
+			// Notify clients about cache update for images
+			if (/\.(png|jpg|jpeg|svg|gif|webp|avif)$/.test(request.url)) {
+				notifyClientsOfUpdate(request.url);
+			}
 		}
 		return response;
 	} catch (error) {
@@ -136,6 +140,17 @@ async function networkFirst(request) {
 		}
 		throw error;
 	}
+}
+
+// Notify all clients about cache updates
+async function notifyClientsOfUpdate(url) {
+	const clients = await self.clients.matchAll({ type: 'window' });
+	clients.forEach((client) => {
+		client.postMessage({
+			type: 'CACHE_UPDATED',
+			url: url,
+		});
+	});
 }
 
 // Stale while revalidate strategy
@@ -158,4 +173,17 @@ self.addEventListener('message', (event) => {
 	if (event.data && event.data.type === 'SKIP_WAITING') {
 		self.skipWaiting();
 	}
+	if (event.data && event.data.type === 'CLEAR_IMAGE_CACHE') {
+		event.waitUntil(clearImageCache());
+	}
 });
+
+// Clear image cache on demand
+async function clearImageCache() {
+	const cache = await caches.open(CACHE_NAME);
+	const keys = await cache.keys();
+	const imageKeys = keys.filter((request) =>
+		/\.(png|jpg|jpeg|svg|gif|webp|avif)$/.test(request.url)
+	);
+	await Promise.all(imageKeys.map((key) => cache.delete(key)));
+}

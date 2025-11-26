@@ -15,11 +15,15 @@ export const metadata = {
 
 export default async function Page(props: {
 	searchParams: Promise<{
-		cursor: string | string[] | undefined;
+		cursor?: string | string[];
+		page?: string | string[];
+		prevCursor?: string | string[];
 	}>;
 }) {
 	const searchParams = await props.searchParams;
 	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
+	const prevCursor = typeof searchParams.prevCursor === "string" ? searchParams.prevCursor : null;
+	const pageParam = typeof searchParams.page === "string" ? parseInt(searchParams.page, 10) : 1;
 
 	const { products } = await executeGraphQL(ProductListPaginatedDocument, {
 		variables: {
@@ -36,9 +40,19 @@ export default async function Page(props: {
 		notFound();
 	}
 
-	const newSearchParams = new URLSearchParams({
-		...(products.pageInfo.endCursor && { cursor: products.pageInfo.endCursor }),
-	});
+	const currentPage = pageParam;
+
+	// Build search params to pass to pagination
+	const paginationSearchParams = new URLSearchParams();
+	if (cursor) {
+		paginationSearchParams.set("cursor", cursor);
+	}
+	if (prevCursor) {
+		paginationSearchParams.set("prevCursor", prevCursor);
+	}
+	if (pageParam > 1) {
+		paginationSearchParams.set("page", String(pageParam));
+	}
 
 	return (
 		<section className="mx-auto max-w-7xl p-8 pb-16">
@@ -50,7 +64,11 @@ export default async function Page(props: {
 				pageInfo={{
 					...products.pageInfo,
 					basePathname: `/products`,
-					urlSearchParams: newSearchParams,
+					urlSearchParams: paginationSearchParams,
+					totalCount: products.totalCount ?? undefined,
+					currentPage,
+					pageSize: ProductsPerPage,
+					prevCursor,
 				}}
 			/>
 		</section>

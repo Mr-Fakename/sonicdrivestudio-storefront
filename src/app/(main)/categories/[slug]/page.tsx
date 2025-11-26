@@ -18,7 +18,7 @@ export const generateMetadata = async (
 		variables: {
 			slug: params.slug,
 			channel: DEFAULT_CHANNEL,
-			sortBy: ProductOrderField.CreatedAt,
+			sortBy: ProductOrderField.UpdatedAt,
 			sortDirection: OrderDirection.Desc,
 		},
 		revalidate: 60,
@@ -36,7 +36,7 @@ export default async function Page(props: { params: Promise<{ slug: string }> })
 		variables: {
 			slug: params.slug,
 			channel: DEFAULT_CHANNEL,
-			sortBy: ProductOrderField.CreatedAt,
+			sortBy: ProductOrderField.UpdatedAt,
 			sortDirection: OrderDirection.Desc,
 		},
 		revalidate: 60,

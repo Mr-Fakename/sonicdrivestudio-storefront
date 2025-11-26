@@ -3,6 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { ProductList } from "./ProductList";
 import { ProductFilter, type FilterOption } from "./ProductFilter";
+import { PriceRangeFilter } from "./PriceRangeFilter";
 import type { ProductListItemFragment } from "@/gql/graphql";
 
 interface ProductListWithFilterProps {
@@ -77,6 +78,41 @@ function productHasAttributeValue(
 }
 
 /**
+ * Gets the price of a product (uses the start price from the price range)
+ */
+function getProductPrice(product: ProductListItemFragment): number {
+	return product.pricing?.priceRange?.start?.gross?.amount ?? 0;
+}
+
+/**
+ * Extracts min and max prices from products
+ */
+function getPriceRange(products: readonly ProductListItemFragment[]): { min: number; max: number } {
+	if (products.length === 0) return { min: 0, max: 0 };
+
+	let min = Infinity;
+	let max = -Infinity;
+
+	products.forEach((product) => {
+		const price = getProductPrice(product);
+		if (price > 0) {
+			min = Math.min(min, price);
+			max = Math.max(max, price);
+		}
+	});
+
+	return { min: min === Infinity ? 0 : min, max: max === -Infinity ? 0 : max };
+}
+
+/**
+ * Checks if a product's price falls within the specified range
+ */
+function productInPriceRange(product: ProductListItemFragment, min: number, max: number): boolean {
+	const price = getProductPrice(product);
+	return price >= min && price <= max;
+}
+
+/**
  * Component that displays products with a dynamic filter based on variant attributes.
  * Filters are applied client-side and state is maintained in URL search params.
  */
@@ -90,25 +126,54 @@ export function ProductListWithFilter({
 	// Extract unique attribute values for filter options
 	const filterOptions = extractAttributeValues(products, attributeSlug);
 
+	// Get price range from all products
+	const priceRange = getPriceRange(products);
+
 	// Get selected filters from URL
 	const selectedFilters = searchParams.get(attributeSlug)?.split(",").filter(Boolean) || [];
+	const selectedPriceRange = searchParams.get("price");
 
-	// Filter products based on selected values
-	const filteredProducts =
-		selectedFilters.length > 0
-			? products.filter((product) =>
-					selectedFilters.some((filterValue) =>
-						productHasAttributeValue(product, attributeSlug, filterValue),
-					),
-			  )
-			: products;
+	// Parse price range
+	let priceMin = 0;
+	let priceMax = Infinity;
+	if (selectedPriceRange) {
+		const [min, max] = selectedPriceRange.split("-").map(Number);
+		if (!isNaN(min) && !isNaN(max)) {
+			priceMin = min;
+			priceMax = max;
+		}
+	}
+
+	// Filter products based on selected values and price
+	let filteredProducts = products;
+
+	// Apply attribute filter
+	if (selectedFilters.length > 0) {
+		filteredProducts = filteredProducts.filter((product) =>
+			selectedFilters.some((filterValue) => productHasAttributeValue(product, attributeSlug, filterValue)),
+		);
+	}
+
+	// Apply price filter
+	if (selectedPriceRange) {
+		filteredProducts = filteredProducts.filter((product) => productInPriceRange(product, priceMin, priceMax));
+	}
 
 	return (
 		<>
 			{/* Filter UI */}
-			{filterOptions.length > 0 && (
-				<ProductFilter options={filterOptions} filterName={attributeSlug} title={filterTitle} />
-			)}
+			<div className="mb-6 flex flex-wrap gap-3">
+				{filterOptions.length > 0 && (
+					<div className="w-full sm:w-auto sm:min-w-[200px]">
+						<ProductFilter options={filterOptions} filterName={attributeSlug} title={filterTitle} />
+					</div>
+				)}
+				{priceRange.max > priceRange.min && (
+					<div className="w-full sm:w-auto sm:min-w-[200px]">
+						<PriceRangeFilter minPrice={priceRange.min} maxPrice={priceRange.max} />
+					</div>
+				)}
+			</div>
 
 			{/* Product List */}
 			{filteredProducts.length > 0 ? (

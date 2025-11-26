@@ -19,7 +19,7 @@ export default async function Page() {
 		variables: {
 			slug: "featured",
 			channel: DEFAULT_CHANNEL,
-			sortBy: ProductOrderField.CreatedAt,
+			sortBy: ProductOrderField.UpdatedAt,
 			sortDirection: OrderDirection.Desc,
 		},
 		revalidate: 60,

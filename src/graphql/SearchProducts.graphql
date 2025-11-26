@@ -21,8 +21,10 @@ query SearchProducts(
 			cursor
 		}
 		pageInfo {
+			startCursor
 			endCursor
 			hasNextPage
+			hasPreviousPage
 		}
 	}
 }

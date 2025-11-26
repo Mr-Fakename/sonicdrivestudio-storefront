@@ -14,9 +14,10 @@ export function middleware(request: NextRequest) {
 		pathname.includes("/collections")
 	) {
 		// Allow caching with revalidation for better bfcache support
+		// Let service worker handle image caching strategy
 		response.headers.set(
 			"Cache-Control",
-			"public, max-age=0, must-revalidate, stale-while-revalidate=59",
+			"public, max-age=0, must-revalidate",
 		);
 	}
 

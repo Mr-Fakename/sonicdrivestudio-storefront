@@ -12,10 +12,13 @@ export const metadata = {
 };
 
 export default async function Page(props: {
-	searchParams: Promise<Record<"query" | "cursor", string | string[] | undefined>>;
+	searchParams: Promise<Record<"query" | "cursor" | "after" | "before" | "page", string | string[] | undefined>>;
 }) {
 	const searchParams = await props.searchParams;
 	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
+	const after = typeof searchParams.after === "string" ? searchParams.after : null;
+	const before = typeof searchParams.before === "string" ? searchParams.before : null;
+	const pageParam = typeof searchParams.page === "string" ? parseInt(searchParams.page, 10) : 1;
 	const searchValue = searchParams.query;
 
 	if (!searchValue) {
@@ -34,7 +37,7 @@ export default async function Page(props: {
 		variables: {
 			first: ProductsPerPage,
 			search: searchValue,
-			after: cursor,
+			after: after || cursor,
 			sortBy: ProductOrderField.Rating,
 			sortDirection: OrderDirection.Asc,
 			channel: DEFAULT_CHANNEL,
@@ -45,6 +48,9 @@ export default async function Page(props: {
 	if (!products) {
 		notFound();
 	}
+
+	// Calculate current page based on total count and page size
+	const currentPage = pageParam || 1;
 
 	const newSearchParams = new URLSearchParams({
 		query: searchValue,
@@ -62,6 +68,9 @@ export default async function Page(props: {
 							...products.pageInfo,
 							basePathname: `/search`,
 							urlSearchParams: newSearchParams,
+							totalCount: products.totalCount,
+							currentPage,
+							pageSize: ProductsPerPage,
 						}}
 					/>
 				</div>

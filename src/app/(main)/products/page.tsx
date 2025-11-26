@@ -16,15 +16,21 @@ export const metadata = {
 export default async function Page(props: {
 	searchParams: Promise<{
 		cursor: string | string[] | undefined;
+		after: string | string[] | undefined;
+		before: string | string[] | undefined;
+		page: string | string[] | undefined;
 	}>;
 }) {
 	const searchParams = await props.searchParams;
 	const cursor = typeof searchParams.cursor === "string" ? searchParams.cursor : null;
+	const after = typeof searchParams.after === "string" ? searchParams.after : null;
+	const before = typeof searchParams.before === "string" ? searchParams.before : null;
+	const pageParam = typeof searchParams.page === "string" ? parseInt(searchParams.page, 10) : 1;
 
 	const { products } = await executeGraphQL(ProductListPaginatedDocument, {
 		variables: {
 			first: ProductsPerPage,
-			after: cursor,
+			after: after || cursor,
 			channel: DEFAULT_CHANNEL,
 			sortBy: ProductOrderField.LastModifiedAt,
 			sortDirection: OrderDirection.Desc,
@@ -35,6 +41,10 @@ export default async function Page(props: {
 	if (!products) {
 		notFound();
 	}
+
+	// Calculate current page based on total count and page size
+	// Note: This is approximate since cursor-based pagination doesn't have exact pages
+	const currentPage = pageParam || 1;
 
 	const newSearchParams = new URLSearchParams({
 		...(products.pageInfo.endCursor && { cursor: products.pageInfo.endCursor }),
@@ -51,6 +61,9 @@ export default async function Page(props: {
 					...products.pageInfo,
 					basePathname: `/products`,
 					urlSearchParams: newSearchParams,
+					totalCount: products.totalCount,
+					currentPage,
+					pageSize: ProductsPerPage,
 				}}
 			/>
 		</section>

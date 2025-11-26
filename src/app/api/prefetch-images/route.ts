@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
 				variables: {
 					slug,
 					channel: DEFAULT_CHANNEL,
-					sortBy: ProductOrderField.UpdatedAt,
+					sortBy: ProductOrderField.LastModifiedAt,
 					sortDirection: OrderDirection.Desc,
 				},
 				revalidate: 60,
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
 				variables: {
 					slug,
 					channel: DEFAULT_CHANNEL,
-					sortBy: ProductOrderField.UpdatedAt,
+					sortBy: ProductOrderField.LastModifiedAt,
 					sortDirection: OrderDirection.Desc,
 				},
 				revalidate: 60,
@@ -103,7 +103,7 @@ export async function GET(request: NextRequest) {
 				variables: {
 					first: 12,
 					channel: DEFAULT_CHANNEL,
-					sortBy: ProductOrderField.UpdatedAt,
+					sortBy: ProductOrderField.LastModifiedAt,
 					sortDirection: OrderDirection.Desc,
 				},
 				revalidate: 60,

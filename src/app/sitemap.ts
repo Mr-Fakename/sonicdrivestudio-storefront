@@ -11,7 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		variables: {
 			first: 100,
 			channel: DEFAULT_CHANNEL,
-			sortBy: ProductOrderField.UpdatedAt,
+			sortBy: ProductOrderField.LastModifiedAt,
 			sortDirection: OrderDirection.Desc,
 		},
 		revalidate: 60 * 60 * 24, // 24 hours

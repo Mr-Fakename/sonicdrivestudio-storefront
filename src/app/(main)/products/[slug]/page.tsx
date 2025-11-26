@@ -104,7 +104,7 @@ export async function generateStaticParams() {
 		variables: {
 			first: 20,
 			channel: DEFAULT_CHANNEL,
-			sortBy: ProductOrderField.UpdatedAt,
+			sortBy: ProductOrderField.LastModifiedAt,
 			sortDirection: OrderDirection.Desc,
 		},
 		withAuth: false,

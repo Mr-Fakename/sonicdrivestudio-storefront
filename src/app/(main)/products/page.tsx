@@ -24,7 +24,7 @@ export default async function Page(props: {
 			first: ProductsPerPage,
 			after: cursor,
 			channel: DEFAULT_CHANNEL,
-			sortBy: ProductOrderField.UpdatedAt,
+			sortBy: ProductOrderField.LastModifiedAt,
 			sortDirection: OrderDirection.Desc,
 		},
 		revalidate: 60,

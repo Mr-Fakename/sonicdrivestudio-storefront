@@ -27,4 +27,19 @@ fragment ProductListItem on Product {
 		url
 		alt
 	}
+	variants {
+		id
+		name
+		attributes {
+			attribute {
+				id
+				name
+				slug
+			}
+			values {
+				id
+				name
+			}
+		}
+	}
 }

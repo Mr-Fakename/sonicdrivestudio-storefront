@@ -6,6 +6,7 @@ import { Suspense, type ReactNode } from "react";
 import { type Metadata } from "next";
 import localFont from "next/font/local";
 import { ToastContainer } from "react-toastify";
+// import { ServiceWorkerRegister } from "./sw-register"; // Temporarily disabled
 import { ScrollRestoration } from "./scroll-restoration";
 import { DraftModeNotification } from "@/ui/components/DraftModeNotification";
 import { StructuredData } from "@/ui/components/StructuredData";
@@ -156,6 +157,7 @@ export default function RootLayout(props: { children: ReactNode }) {
 					<Suspense>
 						<DraftModeNotification />
 					</Suspense>
+					{/* <ServiceWorkerRegister /> */} {/* Temporarily disabled */}
 					<Suspense fallback={null}>
 						<ScrollRestoration />
 					</Suspense>

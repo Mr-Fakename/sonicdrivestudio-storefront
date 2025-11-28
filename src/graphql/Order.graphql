@@ -1,0 +1,145 @@
+query Order($id: ID!, $languageCode: LanguageCodeEnum!) {
+	order(id: $id) {
+		id
+		number
+		created
+		userEmail
+		isPaid
+		paymentStatus
+		discounts {
+			type
+			name
+			amount {
+				amount
+				currency
+			}
+		}
+		chargeStatus
+		authorizeStatus
+		shippingAddress {
+			id
+			city
+			phone
+			postalCode
+			companyName
+			cityArea
+			streetAddress1
+			streetAddress2
+			countryArea
+			country {
+				country
+				code
+			}
+			firstName
+			lastName
+		}
+		billingAddress {
+			id
+			city
+			phone
+			postalCode
+			companyName
+			cityArea
+			streetAddress1
+			streetAddress2
+			countryArea
+			country {
+				country
+				code
+			}
+			firstName
+			lastName
+		}
+		deliveryMethod {
+			... on ShippingMethod {
+				name
+				minimumDeliveryDays
+				maximumDeliveryDays
+			}
+		}
+		total {
+			gross {
+				amount
+				currency
+			}
+			tax {
+				amount
+				currency
+			}
+		}
+		voucher {
+			code
+		}
+		shippingPrice {
+			gross {
+				amount
+				currency
+			}
+		}
+		subtotal {
+			gross {
+				amount
+				currency
+			}
+		}
+		lines {
+			id
+			quantity
+			variant {
+				id
+				name
+				product {
+					id
+					name
+					slug
+				}
+				attributes(variantSelection: ALL) {
+					values {
+						name
+						dateTime
+						boolean
+						translation(languageCode: $languageCode) {
+							name
+						}
+					}
+				}
+			}
+			totalPrice {
+				gross {
+					amount
+					currency
+				}
+			}
+			undiscountedUnitPrice {
+				gross {
+					amount
+					currency
+				}
+			}
+			unitPrice {
+				gross {
+					amount
+					currency
+				}
+			}
+			productName
+			variantName
+			thumbnail(size: 128, format: WEBP) {
+				alt
+				url
+			}
+		}
+		totalBalance {
+			amount
+			currency
+		}
+		totalCaptured {
+			amount
+			currency
+		}
+		metadata {
+			key
+			value
+		}
+	}
+}

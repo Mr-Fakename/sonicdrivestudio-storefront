@@ -6,7 +6,6 @@ import { Suspense, type ReactNode } from "react";
 import { type Metadata } from "next";
 import localFont from "next/font/local";
 import { ToastContainer } from "react-toastify";
-import { ServiceWorkerRegister } from "./sw-register";
 import { ScrollRestoration } from "./scroll-restoration";
 import { DraftModeNotification } from "@/ui/components/DraftModeNotification";
 import { StructuredData } from "@/ui/components/StructuredData";
@@ -160,7 +159,6 @@ export default function RootLayout(props: { children: ReactNode }) {
 					<Suspense fallback={null}>
 						<ScrollRestoration />
 					</Suspense>
-					<ServiceWorkerRegister />
 					<ToastContainer
 						position="top-right"
 						autoClose={3000}

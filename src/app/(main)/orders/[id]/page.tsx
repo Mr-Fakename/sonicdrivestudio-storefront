@@ -1,7 +1,7 @@
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 import { executeGraphQL } from "@/lib/graphql";
-import { OrderDocument } from "@/gql/graphql";
+import { OrderDocument, LanguageCodeEnum } from "@/gql/graphql";
 import { formatDate, formatMoney } from "@/lib/utils";
 import Image from "next/image";
 import { PaymentStatus } from "@/ui/components/PaymentStatus";
@@ -25,7 +25,7 @@ export default async function OrderDetailsPage({ params }: Props) {
 	const { order } = await executeGraphQL(OrderDocument, {
 		variables: {
 			id: decodedId,
-			languageCode: "EN_US",
+			languageCode: LanguageCodeEnum.EnUs,
 		},
 		cache: "no-store",
 	});

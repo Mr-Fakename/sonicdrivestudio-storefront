@@ -56,6 +56,9 @@ query Order($id: ID!, $languageCode: LanguageCodeEnum!) {
 				minimumDeliveryDays
 				maximumDeliveryDays
 			}
+			... on Warehouse {
+				name
+			}
 		}
 		total {
 			gross {

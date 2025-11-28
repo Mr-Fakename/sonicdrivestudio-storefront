@@ -1,7 +1,7 @@
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 import { executeGraphQL } from "@/lib/graphql";
-import { OrderDocument, LanguageCodeEnum } from "@/gql/graphql";
+import { OrderDocument, type LanguageCodeEnum } from "@/checkout/graphql";
 import { formatDate, formatMoney } from "@/lib/utils";
 import Image from "next/image";
 import { PaymentStatus } from "@/ui/components/PaymentStatus";
@@ -25,7 +25,7 @@ export default async function OrderDetailsPage({ params }: Props) {
 	const { order } = await executeGraphQL(OrderDocument, {
 		variables: {
 			id: decodedId,
-			languageCode: LanguageCodeEnum.EnUs,
+			languageCode: "EN_US" as LanguageCodeEnum,
 		},
 		cache: "no-store",
 	});
@@ -312,16 +312,21 @@ export default async function OrderDetailsPage({ params }: Props) {
 							<h2 className="mb-3 text-lg font-medium text-neutral-900">
 								Delivery Method
 							</h2>
-							<p className="text-sm text-neutral-900">
-								{order.deliveryMethod.name}
-							</p>
-							{(order.deliveryMethod.minimumDeliveryDays ||
-								order.deliveryMethod.maximumDeliveryDays) && (
-								<p className="mt-1 text-sm text-neutral-600">
-									Estimated delivery:{" "}
-									{order.deliveryMethod.minimumDeliveryDays}-
-									{order.deliveryMethod.maximumDeliveryDays} days
-								</p>
+							{"name" in order.deliveryMethod && (
+								<>
+									<p className="text-sm text-neutral-900">
+										{order.deliveryMethod.name}
+									</p>
+									{"minimumDeliveryDays" in order.deliveryMethod &&
+										(order.deliveryMethod.minimumDeliveryDays ||
+											order.deliveryMethod.maximumDeliveryDays) && (
+											<p className="mt-1 text-sm text-neutral-600">
+												Estimated delivery:{" "}
+												{order.deliveryMethod.minimumDeliveryDays}-
+												{order.deliveryMethod.maximumDeliveryDays} days
+											</p>
+										)}
+								</>
 							)}
 						</div>
 					)}

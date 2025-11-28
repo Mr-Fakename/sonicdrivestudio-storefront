@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 import AdyenCheckout from "@adyen/adyen-web";
 import { type CardElementData } from "@adyen/adyen-web/dist/types/components/Card/types";
 import type DropinElement from "@adyen/adyen-web/dist/types/components/Dropin";
@@ -49,9 +47,11 @@ export function createAdyenCheckoutInstance(
 		onAdditionalDetails: AdyenCheckoutInstanceOnAdditionalDetails;
 	},
 ) {
+	const adyenEnvironment = (process.env.NEXT_PUBLIC_ADYEN_ENVIRONMENT || "test") as "test" | "live";
+
 	return AdyenCheckout({
 		locale: "en-US",
-		environment: "test",
+		environment: adyenEnvironment,
 		clientKey: adyenSessionResponse.clientKey,
 		session: {
 			id: adyenSessionResponse.session.id,
@@ -98,25 +98,10 @@ export function handlePaymentResult(
 	result: PostAdyenDropInPaymentsResponse | PostAdyenDropInPaymentsDetailsResponse,
 	component: DropinElement,
 ) {
-	switch (result.payment.resultCode) {
-		// @todo https://docs.adyen.com/online-payments/payment-result-codes
-		case AdyenApiPaymentResponse.ResultCodeEnum.AuthenticationFinished:
-		case AdyenApiPaymentResponse.ResultCodeEnum.Cancelled:
-		case AdyenApiPaymentResponse.ResultCodeEnum.ChallengeShopper:
-		case AdyenApiPaymentResponse.ResultCodeEnum.Error:
-		case AdyenApiPaymentResponse.ResultCodeEnum.IdentifyShopper:
-		case AdyenApiPaymentResponse.ResultCodeEnum.Pending:
-		case AdyenApiPaymentResponse.ResultCodeEnum.PresentToShopper:
-		case AdyenApiPaymentResponse.ResultCodeEnum.Received:
-		case AdyenApiPaymentResponse.ResultCodeEnum.RedirectShopper:
-		case AdyenApiPaymentResponse.ResultCodeEnum.Refused: {
-			console.error(result);
-			component.setStatus("error", {
-				message: `${result.payment.resultCode}: ${result.payment.refusalReason as string}`,
-			});
-			return;
-		}
+	const resultCode = result.payment.resultCode;
 
+	switch (resultCode) {
+		// Successful payment statuses
 		case AdyenApiPaymentResponse.ResultCodeEnum.Authorised:
 		case AdyenApiPaymentResponse.ResultCodeEnum.Success: {
 			component.setStatus("success");
@@ -126,13 +111,51 @@ export function handlePaymentResult(
 					checkout: undefined,
 					order: result.orderId,
 					saleorApiUrl,
-					// @todo remove `domain`
-					// https://github.com/saleor/saleor-dashboard/issues/2387
-					// https://github.com/saleor/saleor-app-sdk/issues/87
 					domain,
 				},
 			});
 			window.location.href = newUrl;
+			return;
+		}
+
+		// Pending/In-progress statuses - allow Adyen to handle
+		case AdyenApiPaymentResponse.ResultCodeEnum.ChallengeShopper:
+		case AdyenApiPaymentResponse.ResultCodeEnum.IdentifyShopper:
+		case AdyenApiPaymentResponse.ResultCodeEnum.RedirectShopper:
+		case AdyenApiPaymentResponse.ResultCodeEnum.PresentToShopper:
+		case AdyenApiPaymentResponse.ResultCodeEnum.Pending:
+		case AdyenApiPaymentResponse.ResultCodeEnum.Received: {
+			// These statuses require additional action from the shopper
+			// Adyen SDK will handle the UI for these cases
+			component.setStatus("loading");
+			return;
+		}
+
+		// User cancelled
+		case AdyenApiPaymentResponse.ResultCodeEnum.Cancelled: {
+			component.setStatus("ready");
+			return;
+		}
+
+		// Authentication finished but payment not yet complete
+		case AdyenApiPaymentResponse.ResultCodeEnum.AuthenticationFinished: {
+			component.setStatus("loading");
+			return;
+		}
+
+		// Error cases
+		case AdyenApiPaymentResponse.ResultCodeEnum.Error:
+		case AdyenApiPaymentResponse.ResultCodeEnum.Refused:
+		default: {
+			const errorMessage =
+				result.payment.refusalReason ||
+				(resultCode === AdyenApiPaymentResponse.ResultCodeEnum.Refused
+					? "Payment was refused. Please try a different payment method."
+					: "An error occurred processing your payment. Please try again.");
+
+			component.setStatus("error", {
+				message: errorMessage,
+			});
 			return;
 		}
 	}

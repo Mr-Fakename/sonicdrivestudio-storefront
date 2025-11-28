@@ -33,10 +33,14 @@ export const SequentialCheckoutSection: FC<SequentialCheckoutSectionProps> = ({
 	isComplete,
 	isActive,
 	isLocked,
-	completedSummary: _completedSummary, // TODO: Display summary when section is complete but collapsed
+	completedSummary,
 	children,
 	"data-testid": dataTestId,
 }) => {
+	// Show content when: active, locked, or not complete
+	// Hide content when: complete but not active (collapsed)
+	const showContent = isActive || isLocked || !isComplete;
+
 	return (
 		<div
 			className={clsx(
@@ -89,17 +93,23 @@ export const SequentialCheckoutSection: FC<SequentialCheckoutSectionProps> = ({
 					>
 						{title}
 					</h3>
+					{/* Show summary when complete and collapsed */}
+					{isComplete && !isActive && completedSummary && (
+						<p className="mt-1 text-sm text-base-300">{completedSummary}</p>
+					)}
 				</div>
 			</div>
 
-			{/* Content - always visible for active sections, with pointer-events disabled when locked */}
-			<div
-				className={clsx("border-t border-base-800 px-4 pb-4 pt-4", {
-					"pointer-events-none select-none": isLocked,
-				})}
-			>
-				{children}
-			</div>
+			{/* Content - shown when active, locked, or not complete */}
+			{showContent && (
+				<div
+					className={clsx("border-t border-base-800 px-4 pb-4 pt-4", {
+						"pointer-events-none select-none": isLocked,
+					})}
+				>
+					{children}
+				</div>
+			)}
 		</div>
 	);
 };

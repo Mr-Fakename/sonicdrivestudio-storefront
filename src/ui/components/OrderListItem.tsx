@@ -32,15 +32,14 @@ export const OrderListItem = ({ order, customerEmail }: Props) => {
 						</dd>
 					</div>
 				</dl>
-				{/* TODO: Reveal after implementing the order details page. */}
-				{/* <div className="flex flex-col md:col-span-1 md:flex-row md:items-center lg:col-span-2">
+				<div className="flex flex-col md:col-span-1 md:flex-row md:items-center lg:col-span-2">
 					<LinkWithChannel
-						href="#"
+						href={`/orders/${encodeURIComponent(order.id)}`}
 						className="flex items-center justify-center rounded border border-neutral-200 bg-white px-4 py-2 text-sm hover:bg-neutral-50 focus:bg-neutral-50 md:ml-auto"
 					>
 						View Order
 					</LinkWithChannel>
-				</div> */}
+				</div>
 			</div>
 
 			{order.lines.length > 0 && (
@@ -70,7 +69,7 @@ export const OrderListItem = ({ order, customerEmail }: Props) => {
 														<div className="mr-3 aspect-square h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border bg-neutral-50 md:mr-6 md:h-24 md:w-24">
 															<Image
 																src={product.thumbnail.url}
-																alt={product.thumbnail.alt ?? ""}
+																alt={product.thumbnail.alt || `${product.name} product image`}
 																width={96}
 																height={96}
 																sizes="(max-width: 768px) 64px, 96px"

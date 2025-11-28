@@ -4,14 +4,16 @@ import { useEffect } from "react";
 
 export function ServiceWorkerRegister() {
 	useEffect(() => {
-		// Service Worker temporarily disabled for debugging
-		// TODO: Re-enable after fixing checkout errors
-		/*
+		// Register service worker in production for PWA support and offline caching
 		if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
 			void navigator.serviceWorker
 				.register("/sw.js")
 				.then((registration) => {
-					console.log("Service Worker registered:", registration);
+					if (process.env.NODE_ENV === "development") {
+						// Only log in development
+						// eslint-disable-next-line no-console
+						console.log("Service Worker registered:", registration);
+					}
 
 					// Check for updates periodically
 					setInterval(() => {
@@ -25,26 +27,20 @@ export function ServiceWorkerRegister() {
 
 						newWorker.addEventListener("statechange", () => {
 							if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-								// New service worker available, could show update notification
-								console.log("New service worker available");
+								// New service worker available - could dispatch custom event
+								// for app-level update notification UI
+								window.dispatchEvent(new CustomEvent("sw-update-available"));
 							}
 						});
 					});
 				})
 				.catch((error) => {
-					console.error("Service Worker registration failed:", error);
+					// Only log errors in development or to error tracking service
+					if (process.env.NODE_ENV === "development") {
+						// eslint-disable-next-line no-console
+						console.error("Service Worker registration failed:", error);
+					}
 				});
-		}
-		*/
-
-		// Unregister existing service workers
-		if ("serviceWorker" in navigator) {
-			void navigator.serviceWorker.getRegistrations().then((registrations) => {
-				for (const registration of registrations) {
-					void registration.unregister();
-					console.log("Service Worker unregistered:", registration);
-				}
-			});
 		}
 	}, []);
 

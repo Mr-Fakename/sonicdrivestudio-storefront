@@ -2,7 +2,6 @@
 
 import { getServerAuthClient } from "@/app/config";
 import { cookies } from "next/headers";
-import { DEFAULT_CHANNEL } from "@/app/config";
 
 export async function logout() {
 	"use server";

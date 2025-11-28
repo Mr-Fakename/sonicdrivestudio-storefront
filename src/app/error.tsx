@@ -43,7 +43,7 @@ function isServerError(error: Error): boolean {
 	);
 }
 
-export default function Error({ error, reset }: { error: Error; reset: () => void }) {
+export default function Error({ error }: { error: Error; reset: () => void }) {
 	const [isHandlingAuthError, setIsHandlingAuthError] = useState(false);
 
 	useEffect(() => {

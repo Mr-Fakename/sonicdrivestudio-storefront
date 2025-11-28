@@ -115,7 +115,7 @@ export function CartItem({ item, checkoutId, onQuantityChange, onDelete, index }
 					{item.variant?.product?.thumbnail?.url && (
 						<Image
 							src={item.variant.product.thumbnail.url}
-							alt={item.variant.product.thumbnail.alt ?? ""}
+							alt={item.variant.product.thumbnail.alt || `${item.variant.product.name} product image`}
 							width={144}
 							height={144}
 							sizes="(max-width: 640px) 96px, (max-width: 768px) 112px, 144px"

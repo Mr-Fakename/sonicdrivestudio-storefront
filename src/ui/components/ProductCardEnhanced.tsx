@@ -65,7 +65,7 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 								<ProductImageWrapper
 									loading={loading}
 									src={product.thumbnail.url}
-									alt={product.thumbnail.alt ?? ""}
+									alt={product.thumbnail.alt || `${product.name} product image`}
 									width={400}
 									height={400}
 									priority={priority}

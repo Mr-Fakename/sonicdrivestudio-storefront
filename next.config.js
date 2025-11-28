@@ -3,7 +3,16 @@ const config = {
 	images: {
 		remotePatterns: [
 			{
-				hostname: "*",
+				protocol: "https",
+				hostname: "**.saleor.cloud",
+			},
+			{
+				protocol: "https",
+				hostname: "sonicdrivestudio.com",
+			},
+			{
+				protocol: "https",
+				hostname: "**.sonicdrivestudio.com",
 			},
 		],
 		formats: ["image/avif", "image/webp"],

@@ -1,6 +1,7 @@
 export function ProductSkeleton() {
 	return (
-		<section className="mx-auto max-w-7xl px-6 py-12 lg:px-12">
+		<section className="mx-auto max-w-7xl px-6 py-12 lg:px-12" aria-live="polite" aria-busy="true">
+			<span className="sr-only">Loading product details...</span>
 			<div className="grid gap-8 lg:grid-cols-2 lg:gap-16">
 				{/* Image skeleton */}
 				<div className="lg:sticky lg:top-24 lg:self-start">

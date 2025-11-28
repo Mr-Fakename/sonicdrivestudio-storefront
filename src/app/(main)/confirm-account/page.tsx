@@ -65,10 +65,12 @@ export default function ConfirmAccountPage() {
 					setState("error");
 
 					// Handle specific error codes
-					if (error.code === "INVALID") {
+					if (error && error.code === "INVALID") {
 						setErrorMessage("The confirmation link is invalid or has expired. Please request a new one.");
-					} else {
+					} else if (error) {
 						setErrorMessage(error.message || "An error occurred while confirming your account.");
+					} else {
+						setErrorMessage("An error occurred while confirming your account.");
 					}
 				} else if (data?.confirmAccount?.user) {
 					setState("success");

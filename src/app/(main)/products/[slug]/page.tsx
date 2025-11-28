@@ -242,7 +242,7 @@ export default async function Page(props: {
 					{firstImage && (
 						<ProductImageWrapper
 							priority={true}
-							alt={firstImage.alt ?? ""}
+							alt={firstImage.alt || `${product?.name} product image`}
 							width={800}
 							height={800}
 							src={firstImage.url}

@@ -4,6 +4,9 @@ import { useEffect } from "react";
 
 export function ServiceWorkerRegister() {
 	useEffect(() => {
+		// Service Worker temporarily disabled for debugging
+		// TODO: Re-enable after fixing checkout errors
+		/*
 		if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
 			void navigator.serviceWorker
 				.register("/sw.js")
@@ -31,6 +34,17 @@ export function ServiceWorkerRegister() {
 				.catch((error) => {
 					console.error("Service Worker registration failed:", error);
 				});
+		}
+		*/
+
+		// Unregister existing service workers
+		if ("serviceWorker" in navigator) {
+			void navigator.serviceWorker.getRegistrations().then((registrations) => {
+				for (const registration of registrations) {
+					void registration.unregister();
+					console.log("Service Worker unregistered:", registration);
+				}
+			});
 		}
 	}, []);
 

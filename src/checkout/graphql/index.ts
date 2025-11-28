@@ -26217,7 +26217,6 @@ export type CheckoutFragment = {
 		lastName: string;
 		country: { __typename?: "CountryDisplay"; country: string; code: string };
 	} | null;
-	user?: { __typename?: "User"; id: string; email: string } | null;
 	availablePaymentGateways: Array<{
 		__typename?: "PaymentGateway";
 		id: string;
@@ -28847,10 +28846,6 @@ export const CheckoutFragmentDoc = gql`
 		authorizeStatus
 		chargeStatus
 		isShippingRequired
-		user {
-			id
-			email
-		}
 		availablePaymentGateways {
 			...PaymentGatewayFragment
 		}

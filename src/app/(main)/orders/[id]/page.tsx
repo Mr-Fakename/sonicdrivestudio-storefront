@@ -1,7 +1,7 @@
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 import { executeGraphQL } from "@/lib/graphql";
-import { OrderDocument, type LanguageCodeEnum } from "@/checkout/graphql";
+import { OrderDocument, LanguageCodeEnum } from "@/gql/graphql";
 import { formatDate, formatMoney } from "@/lib/utils";
 import Image from "next/image";
 import { PaymentStatus } from "@/ui/components/PaymentStatus";
@@ -18,6 +18,12 @@ type Props = {
 	params: Promise<{ id: string }>;
 };
 
+export function generateStaticParams() {
+	// Return empty array to prevent static generation at build time
+	// This page requires authentication and dynamic order data
+	return [];
+}
+
 export default async function OrderDetailsPage({ params }: Props) {
 	const { id } = await params;
 	const decodedId = decodeURIComponent(id);
@@ -25,7 +31,7 @@ export default async function OrderDetailsPage({ params }: Props) {
 	const { order } = await executeGraphQL(OrderDocument, {
 		variables: {
 			id: decodedId,
-			languageCode: "EN_US" as LanguageCodeEnum,
+			languageCode: LanguageCodeEnum.EN,
 		},
 		cache: "no-store",
 	});

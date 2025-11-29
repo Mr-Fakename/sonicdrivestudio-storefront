@@ -7,7 +7,19 @@ export const adyenGatewayId = "app.saleor.adyen";
 export type AdyenGatewayId = typeof adyenGatewayId;
 
 // because it's defined to these in the docs but it's a string in the response type
-type AdyenResultCode = "Authorised" | "Error" | "Pending" | "PresentToShopper" | "Refused" | "Received";
+type AdyenResultCode =
+  | "Authorised"
+  | "Success"
+  | "ChallengeShopper"
+  | "IdentifyShopper"
+  | "RedirectShopper"
+  | "PresentToShopper"
+  | "Pending"
+  | "Received"
+  | "Cancelled"
+  | "AuthenticationFinished"
+  | "Error"
+  | "Refused";
 
 export interface AdyenGatewayInitializePayload {
 	paymentMethodsResponse: PaymentMethodsResponse;

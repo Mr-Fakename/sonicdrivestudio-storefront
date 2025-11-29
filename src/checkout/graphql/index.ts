@@ -27994,8 +27994,10 @@ export type OrderFragment = {
 	__typename?: "Order";
 	id: string;
 	number: string;
+	created: string;
 	userEmail?: string | null;
 	isPaid: boolean;
+	paymentStatus: PaymentChargeStatusEnum;
 	chargeStatus: OrderChargeStatusEnum;
 	authorizeStatus: OrderAuthorizeStatusEnum;
 	discounts: Array<{
@@ -28106,8 +28108,10 @@ export type OrderQuery = {
 		__typename?: "Order";
 		id: string;
 		number: string;
+		created: string;
 		userEmail?: string | null;
 		isPaid: boolean;
+		paymentStatus: PaymentChargeStatusEnum;
 		chargeStatus: OrderChargeStatusEnum;
 		authorizeStatus: OrderAuthorizeStatusEnum;
 		discounts: Array<{

@@ -76,13 +76,13 @@ export function createAdyenCheckoutInstance(
 			applepay: {
 				buttonType: "plain",
 				buttonColor: "black",
-				onPaymentMethodSelected: (resolve: ApplePayCallback, reject: ApplePayCallback, event) => {
+				onPaymentMethodSelected: (resolve: ApplePayCallback, _reject: ApplePayCallback, event) => {
 					resolve(event.paymentMethod);
 				},
-				onShippingContactSelected: (resolve: ApplePayCallback, reject: ApplePayCallback, event) => {
+				onShippingContactSelected: (resolve: ApplePayCallback, _reject: ApplePayCallback, event) => {
 					resolve(event.shippingContact);
 				},
-				onShippingMethodSelected: (resolve: ApplePayCallback, reject: ApplePayCallback, event) => {
+				onShippingMethodSelected: (resolve: ApplePayCallback, _reject: ApplePayCallback, event) => {
 					resolve(event.shippingMethod);
 				},
 			},

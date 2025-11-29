@@ -3,6 +3,7 @@ import { unstable_cache } from "next/cache";
 import { redirect } from "next/navigation";
 import { type TypedDocumentString } from "../gql/graphql";
 import { getServerAuthClient } from "@/app/config";
+import type { DocumentNode } from "graphql";
 
 type GraphQLErrorResponse = {
 	errors: readonly {
@@ -12,8 +13,33 @@ type GraphQLErrorResponse = {
 
 type GraphQLRespone<T> = { data: T } | GraphQLErrorResponse;
 
+// Overload for TypedDocumentString with proper type inference
 export async function executeGraphQL<Result, Variables>(
 	operation: TypedDocumentString<Result, Variables>,
+	options: {
+		headers?: HeadersInit;
+		cache?: RequestCache;
+		revalidate?: number;
+		withAuth?: boolean;
+		tags?: string[];
+	} & (Variables extends Record<string, never> ? { variables?: never } : { variables: Variables }),
+): Promise<Result>;
+
+// Overload for DocumentNode (legacy checkout system)
+export async function executeGraphQL<Result = any, Variables = any>(
+	operation: DocumentNode,
+	options: {
+		headers?: HeadersInit;
+		cache?: RequestCache;
+		revalidate?: number;
+		withAuth?: boolean;
+		tags?: string[];
+	} & (Variables extends Record<string, never> ? { variables?: never } : { variables: Variables }),
+): Promise<Result>;
+
+// Implementation
+export async function executeGraphQL<Result, Variables>(
+	operation: TypedDocumentString<Result, Variables> | DocumentNode,
 	options: {
 		headers?: HeadersInit;
 		cache?: RequestCache;
@@ -32,6 +58,13 @@ export async function executeGraphQL<Result, Variables>(
 		const apiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 		invariant(apiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 
+		// Convert operation to query string - handle both DocumentNode and TypedDocumentString
+		const queryString = typeof operation === "string"
+			? operation
+			: "loc" in operation && operation.loc?.source.body
+				? operation.loc.source.body
+				: operation.toString();
+
 		const input = {
 			method: "POST",
 			headers: {
@@ -39,7 +72,7 @@ export async function executeGraphQL<Result, Variables>(
 				...headers,
 			},
 			body: JSON.stringify({
-				query: operation.toString(),
+				query: queryString,
 				...(variables && { variables }),
 			}),
 			cache: cache,
@@ -110,16 +143,6 @@ export async function executeGraphQL<Result, Variables>(
 		} catch (error) {
 			// If JSON parsing fails, it's likely HTML or other non-JSON content
 			if (error instanceof SyntaxError) {
-				// Clone the response to read it again (if not already consumed)
-				let bodyPreview = "Unable to read response body";
-				try {
-					// Response body can only be read once, so we can't get it here
-					// Log what we know from the error
-					bodyPreview = error.message;
-				} catch {
-					// Ignore
-				}
-
 				console.error("[GraphQL] Failed to parse JSON response:", {
 					status: response.status,
 					statusText: response.statusText,
@@ -157,7 +180,12 @@ export async function executeGraphQL<Result, Variables>(
 
 	// Use unstable_cache for public, cacheable queries
 	if (shouldUseCache) {
-		const cacheKey = [operation.toString(), JSON.stringify(variables)];
+		const queryString = typeof operation === "string"
+			? operation
+			: "loc" in operation && operation.loc?.source.body
+				? operation.loc.source.body
+				: operation.toString();
+		const cacheKey = [queryString, JSON.stringify(variables)];
 		const cachedFetch = unstable_cache(fetchData, cacheKey, {
 			revalidate,
 			tags: tags || [],

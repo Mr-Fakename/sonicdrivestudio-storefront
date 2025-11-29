@@ -41,6 +41,9 @@ importers:
       formik:
         specifier: 2.4.5
         version: 2.4.5(react@19.3.0-canary-1873ad79-20251015)
+      graphql:
+        specifier: 16.8.1
+        version: 16.8.1
       libphonenumber-js:
         specifier: 1.10.58
         version: 1.10.58

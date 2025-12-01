@@ -13,7 +13,7 @@ export function ServiceWorkerRegister() {
 					// Check for updates periodically
 					setInterval(() => {
 						void registration.update();
-					}, 60000); // Check every minute
+					}, 300000); // Check every 5 minutes
 
 					// Handle updates
 					registration.addEventListener("updatefound", () => {

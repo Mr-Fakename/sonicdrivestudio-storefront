@@ -25,8 +25,21 @@ export async function executeGraphQL<Result, Variables>(
 	invariant(process.env.NEXT_PUBLIC_SALEOR_API_URL, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 	const { variables, headers, cache, revalidate, withAuth = true, tags } = options;
 
+	// Detect auth-related operations that should never be cached
+	const operationString = operation.toString();
+	const isAuthOperation =
+		operationString.includes("tokenRefresh") ||
+		operationString.includes("checkout") ||
+		operationString.includes("tokenCreate") ||
+		operationString.includes("tokenVerify");
+
+	// Force no-cache for auth operations
+	const effectiveCache = isAuthOperation ? "no-cache" : cache;
+
 	// Create a cache key for unstable_cache when revalidate is set and not using auth
-	const shouldUseCache = revalidate !== undefined && cache !== "no-cache" && !withAuth;
+	// Also exclude auth operations from caching
+	const shouldUseCache =
+		revalidate !== undefined && effectiveCache !== "no-cache" && !withAuth && !isAuthOperation;
 
 	const fetchData = async () => {
 		const apiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
@@ -36,13 +49,15 @@ export async function executeGraphQL<Result, Variables>(
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
+				// Add cache-busting header for auth operations
+				...(isAuthOperation && { "X-Request-Time": Date.now().toString() }),
 				...headers,
 			},
 			body: JSON.stringify({
 				query: operation.toString(),
 				...(variables && { variables }),
 			}),
-			cache: cache,
+			cache: effectiveCache,
 			next: { revalidate, tags },
 		};
 

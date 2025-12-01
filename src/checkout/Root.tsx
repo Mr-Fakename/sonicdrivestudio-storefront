@@ -26,7 +26,7 @@ export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
 		createClient({
 			url: saleorApiUrl,
 			suspense: true,
-			requestPolicy: "cache-first",
+			requestPolicy: "network-only", // Changed from cache-first to prevent stale data
 			fetch: (input, init) => saleorAuthClient.fetchWithAuth(input as NodeJS.fetch.RequestInfo, init),
 			exchanges: [dedupExchange, cacheExchange, authErrorExchange, errorFilterExchange, fetchExchange],
 		});

@@ -127,6 +127,15 @@ export default function RootLayout(props: { children: ReactNode }) {
 				<link rel="preconnect" href={process.env.NEXT_PUBLIC_SALEOR_API_URL} crossOrigin="anonymous" />
 				<link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SALEOR_API_URL} />
 
+			{/* Preload critical font */}
+			<link
+				rel="preload"
+				href="/fonts/Geometos.ttf"
+				as="font"
+				type="font/ttf"
+				crossOrigin="anonymous"
+			/>
+
 				{/* Structured Data for SEO */}
 				<StructuredData data={[generateOrganizationSchema(), generateWebsiteSchema()]} />
 			</head>

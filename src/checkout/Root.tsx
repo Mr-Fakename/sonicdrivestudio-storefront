@@ -22,14 +22,17 @@ import "./index.css";
 export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
 	const saleorAuthClient = useSaleorAuthContext();
 
-	const makeUrqlClient = () =>
-		createClient({
+	const makeUrqlClient = () => {
+		const isServer = typeof window === "undefined";
+
+		return createClient({
 			url: saleorApiUrl,
-			suspense: true,
+			suspense: !isServer, // Disable suspense on server to prevent SSR errors
 			requestPolicy: "network-only", // Changed from cache-first to prevent stale data
 			fetch: (input, init) => saleorAuthClient.fetchWithAuth(input as NodeJS.fetch.RequestInfo, init),
 			exchanges: [dedupExchange, cacheExchange, authErrorExchange, errorFilterExchange, fetchExchange],
 		});
+	};
 
 	const [urqlClient, setUrqlClient] = useState<Client>(makeUrqlClient());
 	useAuthChange({

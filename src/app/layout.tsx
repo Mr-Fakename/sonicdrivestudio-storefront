@@ -154,7 +154,7 @@ export default function RootLayout(props: { children: ReactNode }) {
 				</a>
 				<CookieConsentProvider>
 					{children}
-					<Suspense>
+					<Suspense fallback={null}>
 						<DraftModeNotification />
 					</Suspense>
 					<Suspense fallback={null}>

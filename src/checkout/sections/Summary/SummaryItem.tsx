@@ -22,7 +22,7 @@ export const SummaryItem = ({ line, children }: SummaryItemProps) => {
 				{productImage ? (
 					<Image
 						src={productImage.url}
-						alt={productImage.alt ?? ""}
+						alt={productImage.alt || `${productName} product image`}
 						width={96}
 						height={96}
 						sizes="(max-width: 768px) 64px, 96px"

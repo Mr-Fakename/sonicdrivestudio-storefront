@@ -16,11 +16,18 @@ import { CookieConsent } from "@/components/CookieConsent";
 import { CookieConsentProvider } from "@/contexts/CookieConsentContext";
 
 const geometos = localFont({
-	src: "../../public/fonts/Geometos.ttf",
+	src: [
+		{
+			path: "../../public/fonts/Geometos.woff2",
+			weight: "400",
+			style: "normal",
+		},
+	],
 	variable: "--font-geometos",
 	display: "swap",
-	fallback: ["sans-serif"],
+	fallback: ["Arial", "Helvetica", "sans-serif"],
 	adjustFontFallback: "Arial",
+	preload: true,
 });
 
 export const metadata: Metadata = {
@@ -130,9 +137,9 @@ export default function RootLayout(props: { children: ReactNode }) {
 			{/* Preload critical font */}
 			<link
 				rel="preload"
-				href="/fonts/Geometos.ttf"
+				href="/fonts/Geometos.woff2"
 				as="font"
-				type="font/ttf"
+				type="font/woff2"
 				crossOrigin="anonymous"
 			/>
 

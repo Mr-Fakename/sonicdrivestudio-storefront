@@ -70,7 +70,7 @@ export const OrderListItem = ({ order, customerEmail }: Props) => {
 														<div className="mr-3 aspect-square h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border bg-neutral-50 md:mr-6 md:h-24 md:w-24">
 															<Image
 																src={product.thumbnail.url}
-																alt={product.thumbnail.alt ?? ""}
+																alt={product.thumbnail.alt || `${product.name} product image`}
 																width={96}
 																height={96}
 																sizes="(max-width: 768px) 64px, 96px"

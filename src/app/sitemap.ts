@@ -1,19 +1,21 @@
 import { type MetadataRoute } from "next";
 import { executeGraphQL } from "@/lib/graphql";
-import { ProductListDocument } from "@/gql/graphql";
+import { ProductListDocument, ProductOrderField, OrderDirection } from "@/gql/graphql";
 import { DEFAULT_CHANNEL } from "@/app/config";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sonicdrivestudio.com";
 
 	// Fetch all products for sitemap
-	let allProducts: Array<{ slug: string; updatedAt?: string }> = [];
+	let allProducts: Array<{ slug: string }> = [];
 
 	try {
 		const result = await executeGraphQL(ProductListDocument, {
 			variables: {
 				channel: DEFAULT_CHANNEL,
 				first: 100,
+				sortBy: ProductOrderField.LastModifiedAt,
+				sortDirection: OrderDirection.Desc,
 			},
 			withAuth: false,
 			revalidate: 86400, // 24 hours
@@ -21,7 +23,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 		allProducts = result.products?.edges?.map((edge) => ({
 			slug: edge.node.slug,
-			updatedAt: edge.node.updatedAt,
 		})) || [];
 	} catch (error) {
 		console.error("[SITEMAP] Error fetching products:", error);
@@ -46,7 +47,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	// Product pages
 	const productPages: MetadataRoute.Sitemap = allProducts.map((product) => ({
 		url: `${baseUrl}/products/${product.slug}`,
-		lastModified: product.updatedAt ? new Date(product.updatedAt) : new Date(),
+		lastModified: new Date(),
 		changeFrequency: "weekly" as const,
 		priority: 0.8,
 	}));

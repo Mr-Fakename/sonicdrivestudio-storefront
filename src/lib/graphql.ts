@@ -125,16 +125,6 @@ export async function executeGraphQL<Result, Variables>(
 		} catch (error) {
 			// If JSON parsing fails, it's likely HTML or other non-JSON content
 			if (error instanceof SyntaxError) {
-				// Clone the response to read it again (if not already consumed)
-				let bodyPreview = "Unable to read response body";
-				try {
-					// Response body can only be read once, so we can't get it here
-					// Log what we know from the error
-					bodyPreview = error.message;
-				} catch {
-					// Ignore
-				}
-
 				console.error("[GraphQL] Failed to parse JSON response:", {
 					status: response.status,
 					statusText: response.statusText,

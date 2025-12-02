@@ -38,6 +38,10 @@ fragment PaymentGatewayFragment on PaymentGateway {
 fragment CheckoutFragment on Checkout {
 	id
 	email
+	user {
+		id
+		email
+	}
 	discount {
 		...Money
 	}

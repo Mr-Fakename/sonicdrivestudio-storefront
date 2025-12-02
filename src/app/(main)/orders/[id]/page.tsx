@@ -31,7 +31,7 @@ export default async function OrderDetailsPage({ params }: Props) {
 	const { order } = await executeGraphQL(OrderDocument, {
 		variables: {
 			id: decodedId,
-			languageCode: LanguageCodeEnum.EN,
+			languageCode: LanguageCodeEnum.En,
 		},
 		cache: "no-store",
 	});

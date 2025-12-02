@@ -1,31 +1,45 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useRef } from "react";
 import { useCheckoutCustomerAttachMutation } from "@/checkout/graphql";
-import { useSubmit } from "@/checkout/hooks/useSubmit/useSubmit";
 import { useUser } from "@/checkout/hooks/useUser";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
 
 export const useCustomerAttach = () => {
-	const { checkout, fetching: fetchingCheckout } = useCheckout();
-	const { authenticated } = useUser();
+	const { checkout } = useCheckout();
+	const { authenticated, user } = useUser();
+	const [{ fetching }, customerAttach] = useCheckoutCustomerAttachMutation();
 
-	const [{ fetching: fetchingCustomerAttach }, customerAttach] = useCheckoutCustomerAttachMutation();
-
-	const onSubmit = useSubmit<{}, typeof customerAttach>(
-		useMemo(
-			() => ({
-				hideAlerts: true,
-				scope: "checkoutCustomerAttach",
-				shouldAbort: () =>
-					!!checkout?.user?.id || !authenticated || fetchingCustomerAttach || fetchingCheckout,
-				onSubmit: customerAttach,
-				parse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId }),
-				// No error handler needed - if checkout is already attached, that's the desired state
-			}),
-			[authenticated, checkout?.user?.id, customerAttach, fetchingCheckout, fetchingCustomerAttach],
-		),
-	);
+	// Track if we've attempted attachment for this checkout+user combination
+	const attemptedRef = useRef<string | null>(null);
+	const currentKey = `${checkout?.id}-${user?.id}`;
 
 	useEffect(() => {
-		void onSubmit();
-	}, [onSubmit]);
+		// Skip if already attempted for this checkout+user combo
+		if (attemptedRef.current === currentKey) {
+			return;
+		}
+
+		// Skip if conditions aren't met
+		if (!checkout?.id || !authenticated || !user?.id || fetching) {
+			return;
+		}
+
+		// Skip if checkout is already attached to this user
+		if (checkout.user?.id === user.id) {
+			attemptedRef.current = currentKey;
+			return;
+		}
+
+		// Skip if checkout is attached to a different user (don't try to reassign)
+		if (checkout.user?.id && checkout.user.id !== user.id) {
+			attemptedRef.current = currentKey;
+			return;
+		}
+
+		// Attempt to attach customer
+		attemptedRef.current = currentKey;
+		void customerAttach({
+			checkoutId: checkout.id,
+			languageCode: "EN_US",
+		});
+	}, [checkout?.id, checkout?.user?.id, user?.id, authenticated, fetching, customerAttach, currentKey]);
 };

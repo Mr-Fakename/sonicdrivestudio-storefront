@@ -7,13 +7,18 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
+		"build:analyze": "ANALYZE=true next build",
 		"start": "next start",
 		"predev": "pnpm run generate",
 		"prebuild": "pnpm run generate",
 		"lint": "eslint --fix src",
+		"lint:check": "eslint src",
 		"generate": "graphql-codegen --config .graphqlrc.ts",
 		"prepare": "husky install",
-		"test": "playwright test"
+		"test": "playwright test",
+		"type-check": "tsc --noEmit",
+		"perf:lighthouse": "lhci autorun --collect.numberOfRuns=3 --collect.url=http://localhost:3000",
+		"bundle:size": "du -sh .next/static/chunks/* | sort -h"
 	},
 	"dependencies": {
 		"@adyen/adyen-web": "5.53.3",

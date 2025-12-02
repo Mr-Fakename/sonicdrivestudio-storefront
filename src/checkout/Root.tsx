@@ -28,7 +28,7 @@ export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
 		return createClient({
 			url: saleorApiUrl,
 			suspense: !isServer, // Disable suspense on server to prevent SSR errors
-			requestPolicy: "network-only", // Changed from cache-first to prevent stale data
+			requestPolicy: isServer ? "network-only" : "cache-first", // Use cache-first on client to prevent infinite query loops
 			fetch: (input, init) => saleorAuthClient.fetchWithAuth(input as NodeJS.fetch.RequestInfo, init),
 			exchanges: [dedupExchange, cacheExchange, authErrorExchange, errorFilterExchange, fetchExchange],
 		});

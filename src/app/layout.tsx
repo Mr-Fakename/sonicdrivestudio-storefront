@@ -6,7 +6,7 @@ import { Suspense, type ReactNode } from "react";
 import { type Metadata } from "next";
 import localFont from "next/font/local";
 import { ToastContainer } from "react-toastify";
-// import { ServiceWorkerRegister } from "./sw-register"; // Temporarily disabled
+import { ServiceWorkerRegister } from "./sw-register";
 import { ScrollRestoration } from "./scroll-restoration";
 import { DraftModeNotification } from "@/ui/components/DraftModeNotification";
 import { StructuredData } from "@/ui/components/StructuredData";
@@ -14,13 +14,21 @@ import { generateOrganizationSchema, generateWebsiteSchema } from "@/lib/seo";
 import { SITE_CONFIG } from "@/lib/constants";
 import { CookieConsent } from "@/components/CookieConsent";
 import { CookieConsentProvider } from "@/contexts/CookieConsentContext";
+import { WebVitals } from "@/components/WebVitals";
 
 const geometos = localFont({
-	src: "../../public/fonts/Geometos.ttf",
+	src: [
+		{
+			path: "../../public/fonts/Geometos.woff2",
+			weight: "400",
+			style: "normal",
+		},
+	],
 	variable: "--font-geometos",
 	display: "swap",
-	fallback: ["sans-serif"],
+	fallback: ["Arial", "Helvetica", "sans-serif"],
 	adjustFontFallback: "Arial",
+	preload: true,
 });
 
 export const metadata: Metadata = {
@@ -127,6 +135,15 @@ export default function RootLayout(props: { children: ReactNode }) {
 				<link rel="preconnect" href={process.env.NEXT_PUBLIC_SALEOR_API_URL} crossOrigin="anonymous" />
 				<link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SALEOR_API_URL} />
 
+			{/* Preload critical font */}
+			<link
+				rel="preload"
+				href="/fonts/Geometos.woff2"
+				as="font"
+				type="font/woff2"
+				crossOrigin="anonymous"
+			/>
+
 				{/* Structured Data for SEO */}
 				<StructuredData data={[generateOrganizationSchema(), generateWebsiteSchema()]} />
 			</head>
@@ -154,13 +171,14 @@ export default function RootLayout(props: { children: ReactNode }) {
 				</a>
 				<CookieConsentProvider>
 					{children}
-					<Suspense>
+					<Suspense fallback={null}>
 						<DraftModeNotification />
 					</Suspense>
-					{/* <ServiceWorkerRegister /> */} {/* Temporarily disabled */}
 					<Suspense fallback={null}>
 						<ScrollRestoration />
 					</Suspense>
+					<ServiceWorkerRegister />
+					<WebVitals />
 					<ToastContainer
 						position="top-right"
 						autoClose={3000}

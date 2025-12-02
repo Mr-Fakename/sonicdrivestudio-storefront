@@ -1,18 +1,25 @@
 import { type MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-	const baseUrl = process.env.NEXT_PUBLIC_STOREFRONT_URL || "https://example.com";
+	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sonicdrivestudio.com";
 
 	return {
 		rules: [
 			{
 				userAgent: "*",
 				allow: "/",
-				disallow: ["/checkout", "/cart", "/api/", "/_next/"],
+				disallow: ["/api/", "/checkout/", "/account/", "/_next/", "/admin/"],
 			},
 			{
-				userAgent: "GPTBot",
-				disallow: ["/"],
+				userAgent: "Googlebot",
+				allow: "/",
+				disallow: ["/api/", "/checkout/", "/account/", "/_next/", "/admin/"],
+			},
+			{
+				userAgent: "bingbot",
+				allow: "/",
+				disallow: ["/api/", "/checkout/", "/account/", "/_next/", "/admin/"],
+				crawlDelay: 1,
 			},
 		],
 		sitemap: `${baseUrl}/sitemap.xml`,

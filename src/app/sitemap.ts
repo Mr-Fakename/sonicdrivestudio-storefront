@@ -4,33 +4,36 @@ import { ProductListDocument, ProductOrderField, OrderDirection } from "@/gql/gr
 import { DEFAULT_CHANNEL } from "@/app/config";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-	const baseUrl = process.env.NEXT_PUBLIC_STOREFRONT_URL || "https://example.com";
+	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sonicdrivestudio.com";
 
-	// Fetch products
-	const { products } = await executeGraphQL(ProductListDocument, {
-		variables: {
-			first: 100,
-			channel: DEFAULT_CHANNEL,
-			sortBy: ProductOrderField.LastModifiedAt,
-			sortDirection: OrderDirection.Desc,
-		},
-		revalidate: 60 * 60 * 24, // 24 hours
-		withAuth: false,
-		tags: ["sitemap", "products"],
-	});
+	// Fetch all products for sitemap
+	let allProducts: Array<{ slug: string }> = [];
 
-	const productUrls: MetadataRoute.Sitemap = (products?.edges || []).map(({ node }) => ({
-		url: `${baseUrl}/products/${node.slug}`,
-		lastModified: new Date(),
-		changeFrequency: "daily" as const,
-		priority: 0.8,
-	}));
+	try {
+		const result = await executeGraphQL(ProductListDocument, {
+			variables: {
+				channel: DEFAULT_CHANNEL,
+				first: 100,
+				sortBy: ProductOrderField.LastModifiedAt,
+				sortDirection: OrderDirection.Desc,
+			},
+			withAuth: false,
+			revalidate: 86400, // 24 hours
+		});
 
-	return [
+		allProducts = result.products?.edges?.map((edge) => ({
+			slug: edge.node.slug,
+		})) || [];
+	} catch (error) {
+		console.error("[SITEMAP] Error fetching products:", error);
+	}
+
+	// Static pages
+	const staticPages: MetadataRoute.Sitemap = [
 		{
 			url: baseUrl,
 			lastModified: new Date(),
-			changeFrequency: "daily",
+			changeFrequency: "weekly",
 			priority: 1.0,
 		},
 		{
@@ -39,6 +42,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 			changeFrequency: "daily",
 			priority: 0.9,
 		},
-		...productUrls,
 	];
+
+	// Product pages
+	const productPages: MetadataRoute.Sitemap = allProducts.map((product) => ({
+		url: `${baseUrl}/products/${product.slug}`,
+		lastModified: new Date(),
+		changeFrequency: "weekly" as const,
+		priority: 0.8,
+	}));
+
+	return [...staticPages, ...productPages];
 }
+
+// Enable ISR for sitemap
+export const revalidate = 86400; // Regenerate sitemap every 24 hours

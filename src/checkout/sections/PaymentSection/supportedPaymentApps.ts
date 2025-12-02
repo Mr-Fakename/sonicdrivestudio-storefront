@@ -1,12 +1,12 @@
-import { AdyenDropIn } from "./AdyenDropIn/AdyenDropIn";
+import { LazyAdyenComponent } from "./AdyenDropIn/LazyAdyenComponent";
 import { adyenGatewayId } from "./AdyenDropIn/types";
 import { DummyComponent } from "./DummyDropIn/dummyComponent";
 import { dummyGatewayId } from "./DummyDropIn/types";
-import { OptimizedStripeComponent as StripeComponent } from "./StripeElements/OptimizedStripeComponent";
+import { LazyStripeComponent } from "./StripeElements/LazyStripeComponent";
 import { stripeGatewayId } from "./StripeElements/types";
 
 export const paymentMethodToComponent = {
-	[adyenGatewayId]: AdyenDropIn,
-	[stripeGatewayId]: StripeComponent,
+	[adyenGatewayId]: LazyAdyenComponent,
+	[stripeGatewayId]: LazyStripeComponent,
 	[dummyGatewayId]: DummyComponent,
 };

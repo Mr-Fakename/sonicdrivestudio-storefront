@@ -63,8 +63,19 @@ export const authErrorExchange: Exchange =
 					// Clear ALL cookies (safe since important data is in localStorage)
 					clearAllCookies();
 
+					// Send message to Service Worker to clear all caches
+					if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
+						console.log("[AUTH] Sending message to Service Worker to clear all caches...");
+						navigator.serviceWorker.controller.postMessage({
+							type: "CLEAR_ALL_CACHES",
+						});
+					}
+
 					console.log("[AUTH] Redirecting to home page immediately...");
-					window.location.href = "/";
+					// Small delay to let SW clear caches
+					setTimeout(() => {
+						window.location.href = "/";
+					}, 100);
 				}
 			}),
 		);

@@ -61,10 +61,12 @@ export const saleorAuthClient = createSaleorAuthClient({
 });
 
 const makeUrqlClient = () => {
+	const isServer = typeof window === "undefined";
+
 	return createClient({
 		url: saleorApiUrl,
-		suspense: true,
-		// requestPolicy: "cache-first",
+		suspense: !isServer, // Disable suspense on server to prevent SSR errors
+		requestPolicy: isServer ? "network-only" : "cache-first",
 		fetch: (input, init) => saleorAuthClient.fetchWithAuth(input as NodeJS.fetch.RequestInfo, init),
 		exchanges: [dedupExchange, cacheExchange, authErrorExchange, fetchExchange],
 	});

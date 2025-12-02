@@ -10,7 +10,7 @@ import {
 } from "urql";
 
 import { ToastContainer } from "react-toastify";
-import { useAuthChange, useSaleorAuthContext } from "@saleor/auth-sdk/react";
+import { useSaleorAuthContext } from "@saleor/auth-sdk/react";
 import { useState } from "react";
 import { alertsContainerProps } from "./hooks/useAlerts/consts";
 import { RootViews } from "./views/RootViews";
@@ -34,12 +34,10 @@ export const Root = ({ saleorApiUrl }: { saleorApiUrl: string }) => {
 		});
 	};
 
-	const [urqlClient, setUrqlClient] = useState<Client>(makeUrqlClient());
-	useAuthChange({
-		saleorApiUrl,
-		onSignedOut: () => setUrqlClient(makeUrqlClient()),
-		onSignedIn: () => setUrqlClient(makeUrqlClient()),
-	});
+	// Create URQL client once and reuse it.
+	// We don't need to recreate on token refresh - fetchWithAuth handles token updates automatically.
+	// This prevents the infinite loop where token refresh → client recreation → query re-execution → token refresh.
+	const [urqlClient] = useState<Client>(makeUrqlClient());
 
 	return (
 		<UrqlProvider value={urqlClient}>

@@ -57,7 +57,7 @@ export function LoginForm() {
 				setErrors(errorMessages);
 			} else {
 				// Successful login - redirect to home page
-				router.push("/");
+				router.push("/account");
 				router.refresh();
 			}
 		} catch (error) {

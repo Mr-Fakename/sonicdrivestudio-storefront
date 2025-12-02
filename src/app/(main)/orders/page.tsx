@@ -23,7 +23,7 @@ export default async function OrderPage() {
 	return (
 		<div className="mx-auto max-w-7xl p-8">
 			<h1 className="text-2xl font-bold tracking-tight text-white">
-				Your Orders
+				My Orders
 			</h1>
 
 			{orders.length === 0 ? (

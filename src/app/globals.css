@@ -22,18 +22,18 @@
 	/* Typography */
 	font-feature-settings:
 		"liga" 1,
-		"calt" 1,
-		"dlig" 1,
-		"ss07" 1,
-		"ss08" 1,
-		"zero" 1,
-		"tnum" 1,
-		"cv03" 1,
-		"cv04" 1,
-		"cv01" 1,
-		"cv09",
-		"cv02" 1;
-	font-variant-numeric: tabular-nums;
+		"calt" 1;
+		/*"dlig" 1,*/
+		/*"ss07" 1,*/
+		/*"ss08" 1,*/
+		/*"zero" 1,*/
+		/*"tnum" 1,*/
+		/*"cv03" 1,*/
+		/*"cv04" 1,*/
+		/*"cv01" 1,*/
+		/*"cv09",*/
+		/*"cv02" 1;*/
+	/*font-variant-numeric: tabular-nums;*/
 
 	/* Custom animation variables */
 	--shimmer-duration: 2.5s;
@@ -421,6 +421,9 @@
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
+		font-feature-settings: normal;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
 	}
 
 	/* Glow effect */

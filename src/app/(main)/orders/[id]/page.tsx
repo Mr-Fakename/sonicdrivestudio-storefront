@@ -52,7 +52,7 @@ export default async function OrderDetailsPage({ params }: Props) {
 			</div>
 
 			<div className="mb-8">
-				<h1 className="text-3xl font-bold text-neutral-900">
+				<h1 className="text-3xl font-bold text-white">
 					Order #{order.number}
 				</h1>
 				<p className="mt-2 text-sm text-neutral-600">

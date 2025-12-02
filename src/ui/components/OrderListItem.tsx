@@ -35,7 +35,7 @@ export const OrderListItem = ({ order, customerEmail }: Props) => {
 				<div className="flex flex-col md:col-span-1 md:flex-row md:items-center lg:col-span-2">
 					<LinkWithChannel
 						href={`/orders/${encodeURIComponent(order.id)}`}
-						className="flex items-center justify-center rounded border border-neutral-200 bg-white px-4 py-2 text-sm hover:bg-neutral-50 focus:bg-neutral-50 md:ml-auto"
+						className="flex items-center justify-center rounded border text-black border-neutral-200 bg-white px-4 py-2 text-sm hover:bg-neutral-50 focus:bg-neutral-50 md:ml-auto"
 					>
 						View Order
 					</LinkWithChannel>

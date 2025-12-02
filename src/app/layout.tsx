@@ -14,6 +14,7 @@ import { generateOrganizationSchema, generateWebsiteSchema } from "@/lib/seo";
 import { SITE_CONFIG } from "@/lib/constants";
 import { CookieConsent } from "@/components/CookieConsent";
 import { CookieConsentProvider } from "@/contexts/CookieConsentContext";
+import { WebVitals } from "@/components/WebVitals";
 
 const geometos = localFont({
 	src: [
@@ -177,6 +178,7 @@ export default function RootLayout(props: { children: ReactNode }) {
 						<ScrollRestoration />
 					</Suspense>
 					<ServiceWorkerRegister />
+					<WebVitals />
 					<ToastContainer
 						position="top-right"
 						autoClose={3000}

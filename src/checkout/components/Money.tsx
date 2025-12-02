@@ -21,7 +21,15 @@ export const Money = <TMoney extends MoneyType>({
 	}
 
 	return (
-		<p {...textProps} aria-label={ariaLabel} className={className}>
+		<p
+			{...textProps}
+			aria-label={ariaLabel}
+			className={`tabular-nums ${className || ""}`}
+			style={{
+				fontVariantNumeric: "tabular-nums",
+				fontFeatureSettings: '"tnum"',
+			}}
+		>
 			{formattedMoney}
 		</p>
 	);

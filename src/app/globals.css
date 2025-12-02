@@ -541,4 +541,14 @@
 			transform: none !important;
 		}
 	}
+
+	/* Fix for currency symbols appearing too large
+	 * Geometos font doesn't include proper € glyph, causing fallback to Arial
+	 * which has different metrics. This normalizes the appearance. */
+	.tabular-nums {
+		font-feature-settings: "tnum";
+		font-variant-numeric: tabular-nums;
+		/* Ensure currency symbols and numbers use the same baseline and size */
+		letter-spacing: -0.02em;
+	}
 }

@@ -5,7 +5,7 @@ import { useUser } from "@/checkout/hooks/useUser";
 import { useCheckout } from "@/checkout/hooks/useCheckout";
 
 export const useCustomerAttach = () => {
-	const { checkout, fetching: fetchingCheckout, refetch } = useCheckout();
+	const { checkout, fetching: fetchingCheckout } = useCheckout();
 	const { authenticated } = useUser();
 
 	const [{ fetching: fetchingCustomerAttach }, customerAttach] = useCheckoutCustomerAttachMutation();
@@ -19,20 +19,9 @@ export const useCustomerAttach = () => {
 					!!checkout?.user?.id || !authenticated || fetchingCustomerAttach || fetchingCheckout,
 				onSubmit: customerAttach,
 				parse: ({ languageCode, checkoutId }) => ({ languageCode, checkoutId }),
-				onError: ({ errors }) => {
-					if (
-						errors.some(
-							(error) =>
-								error?.message?.includes(
-									"[GraphQL] You cannot reassign a checkout that is already attached to a user.",
-								),
-						)
-					) {
-						refetch();
-					}
-				},
+				// No error handler needed - if checkout is already attached, that's the desired state
 			}),
-			[authenticated, checkout?.user?.id, customerAttach, fetchingCheckout, fetchingCustomerAttach, refetch],
+			[authenticated, checkout?.user?.id, customerAttach, fetchingCheckout, fetchingCustomerAttach],
 		),
 	);
 

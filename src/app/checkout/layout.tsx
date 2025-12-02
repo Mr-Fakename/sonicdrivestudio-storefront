@@ -4,6 +4,13 @@ import { AuthProvider } from "@/ui/components/AuthProvider";
 export const metadata = {
 	title: "Saleor Storefront example",
 	description: "Starter pack for building performant e-commerce experiences with Saleor.",
+	other: {
+		// Preload Stripe.js for faster payment initialization
+		"link": [
+			'<https://js.stripe.com>; rel=preconnect',
+			'<https://js.stripe.com/v3/>; rel=preload; as=script',
+		],
+	},
 };
 
 export default function RootLayout(props: { children: ReactNode }) {

@@ -365,7 +365,10 @@ export const StripeElementsProvider: FC<StripeElementsProviderProps> = ({ childr
 			isCancelled = true;
 			clearTimeout(timeoutId);
 		};
-	}, [initializePaymentSession, showCustomErrors, checkout?.id, checkoutAmount]);
+		// Only depend on primitive values to prevent cancelling successful initializations
+		// when checkout object reference changes but values remain the same
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [checkout?.id, checkoutAmount, isCheckoutReady]);
 
 	// Timeout for initialization
 	useEffect(() => {

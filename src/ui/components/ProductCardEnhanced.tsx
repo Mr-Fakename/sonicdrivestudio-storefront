@@ -243,6 +243,6 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 					</div>
 				</Dialog>
 			</Transition>
-			</>
-	);
+	</>
+);
 }

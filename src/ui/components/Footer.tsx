@@ -117,11 +117,11 @@ export async function Footer() {
 
 				<div className="flex flex-col gap-4 border-t border-base-900 py-10">
 					<div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
-						<p className="text-sm text-base-400">
+						<p className="text-sm text-base-300">
 							Contact:{" "}
 							<a
 								href="mailto:jon@sonicdrivestudio.com"
-								className="text-accent-300 transition-colors duration-200 hover:text-accent-200"
+								className="text-accent-200 underline transition-colors duration-200 hover:text-accent-100"
 							>
 								jon@sonicdrivestudio.com
 							</a>
@@ -129,18 +129,18 @@ export async function Footer() {
 						<CookiePreferencesButton />
 					</div>
 					<div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
-						<p className="text-sm text-base-400">
+						<p className="text-sm text-base-300">
 							🌅 Crafted with care by{" "}
 							<a
 								href="https://www.daybreakdevelopment.eu/"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="text-accent-300 transition-colors duration-200 hover:text-accent-200"
+								className="text-accent-200 underline transition-colors duration-200 hover:text-accent-100"
 							>
 								Daybreak Development
 							</a>
 						</p>
-						<p className="text-sm text-base-400">
+						<p className="text-sm text-base-300">
 							Copyright &copy; {currentYear} Sonic Drive Studio. All rights reserved.
 						</p>
 					</div>

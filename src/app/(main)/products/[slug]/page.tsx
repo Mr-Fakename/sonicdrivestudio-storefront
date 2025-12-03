@@ -78,7 +78,7 @@ export async function generateMetadata(
 	}
 
 	return {
-		title: `${product.name} | ${product.seoTitle || (await parent).title?.absolute}`,
+		title: `${product.name} | Sonic Drive Studio`,
 		description,
 		alternates: {
 			canonical: process.env.NEXT_PUBLIC_STOREFRONT_URL

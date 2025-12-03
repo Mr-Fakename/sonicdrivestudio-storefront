@@ -3,8 +3,8 @@ import { Footer } from "@/ui/components/Footer";
 import { Header } from "@/ui/components/Header";
 
 export const metadata = {
-	title: "Saleor Storefront example",
-	description: "Starter pack for building performant e-commerce experiences with Saleor.",
+	title: "Sonic Drive Studio",
+	description: "High-quality cab impulse responses and amp captures for professional guitar tones. Perfect for rock, metal, and all genres.",
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {

@@ -1,6 +1,7 @@
 "use client";
 
-import { Fragment, useState, lazy, Suspense } from "react";
+import { Fragment, useState } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 import { InfoIcon, XIcon } from "lucide-react";
 import xss from "xss";
 import { type ProductListItemFragment } from "@/gql/graphql";
@@ -8,10 +9,6 @@ import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
 import { formatMoneyRange } from "@/lib/utils";
 import { parseEditorJsToHTML } from "@/lib/editorjs/parser";
-
-// Lazy load Dialog and Transition since they're not needed on initial render
-const Dialog = lazy(() => import("@headlessui/react").then((mod) => ({ default: mod.Dialog })));
-const Transition = lazy(() => import("@headlessui/react").then((mod) => ({ default: mod.Transition })));
 
 interface ProductCardEnhancedProps {
 	product: ProductListItemFragment;

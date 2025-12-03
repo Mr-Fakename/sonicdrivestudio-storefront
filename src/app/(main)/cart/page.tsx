@@ -2,7 +2,7 @@ import { CheckoutLink } from "./CheckoutLink";
 import { CartItemList } from "./CartItemList";
 import * as Checkout from "@/lib/checkout";
 import { formatMoney } from "@/lib/utils";
-import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
+import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
 
 export const metadata = {
@@ -49,9 +49,9 @@ export default async function Page() {
 						</p>
 					</div>
 
-					<LinkWithChannel href="/products" className="btn-primary inline-block">
+					<Link href="/products" className="btn-primary inline-block">
 						Explore Products
-					</LinkWithChannel>
+					</Link>
 				</div>
 			</section>
 		);

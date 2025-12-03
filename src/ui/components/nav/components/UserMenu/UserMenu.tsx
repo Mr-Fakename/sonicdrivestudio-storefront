@@ -7,7 +7,7 @@ import { UserInfo } from "./components/UserInfo";
 import { UserAvatar } from "./components/UserAvatar";
 import { type UserDetailsFragment } from "@/gql/graphql";
 import { logout } from "@/app/actions";
-import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
+import Link from "next/link";
 
 type Props = {
 	user: UserDetailsFragment;
@@ -34,7 +34,7 @@ export function UserMenu({ user }: Props) {
 					<div className="flex flex-col px-1 py-1">
 						<Menu.Item>
 							{({ active }) => (
-								<LinkWithChannel
+								<Link
 									href="/account"
 									className={clsx(
 										active && "bg-base-900 text-accent-200",
@@ -42,12 +42,12 @@ export function UserMenu({ user }: Props) {
 									)}
 								>
 									My account
-								</LinkWithChannel>
+								</Link>
 							)}
 						</Menu.Item>
 						<Menu.Item>
 							{({ active }) => (
-								<LinkWithChannel
+								<Link
 									href="/orders"
 									className={clsx(
 										active && "bg-base-900 text-accent-200",
@@ -55,7 +55,7 @@ export function UserMenu({ user }: Props) {
 									)}
 								>
 									My orders
-								</LinkWithChannel>
+								</Link>
 							)}
 						</Menu.Item>
 					</div>

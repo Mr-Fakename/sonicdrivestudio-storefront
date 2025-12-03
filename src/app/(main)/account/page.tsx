@@ -2,7 +2,7 @@ import { CurrentUserWithAddressesDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
 import { LoginForm } from "@/ui/components/LoginForm";
 import { SITE_CONFIG } from "@/lib/constants";
-import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
+import Link from "next/link";
 import { User, MapPin, Package } from "lucide-react";
 
 export const metadata = {
@@ -43,7 +43,7 @@ export default async function AccountPage() {
 			</div>
 
 			<div className="grid gap-6 md:grid-cols-2">
-				<LinkWithChannel
+				<Link
 					href="/account/addresses"
 					className="group rounded-lg border border-neutral-200 bg-white p-6 transition-all hover:border-accent-400 hover:shadow-md"
 				>
@@ -64,9 +64,9 @@ export default async function AccountPage() {
 					<div className="mt-4 text-accent-400 font-medium group-hover:text-accent-500">
 						Manage addresses →
 					</div>
-				</LinkWithChannel>
+				</Link>
 
-				<LinkWithChannel
+				<Link
 					href="/orders"
 					className="group rounded-lg border border-neutral-200 bg-white p-6 transition-all hover:border-accent-400 hover:shadow-md"
 				>
@@ -87,7 +87,7 @@ export default async function AccountPage() {
 					<div className="mt-4 text-accent-400 font-medium group-hover:text-accent-500">
 						View orders →
 					</div>
-				</LinkWithChannel>
+				</Link>
 			</div>
 		</div>
 	);

@@ -1,4 +1,4 @@
-import { LinkWithChannel } from "../atoms/LinkWithChannel";
+import Link from "next/link";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
 
 import type { ProductListItemFragment } from "@/gql/graphql";
@@ -11,7 +11,7 @@ export function ProductElement({
 }: { product: ProductListItemFragment } & { loading: "eager" | "lazy"; priority?: boolean }) {
 	return (
 		<li data-testid="ProductElement" className="stagger-item">
-			<LinkWithChannel href={`/products/${product.slug}`} key={product.id}>
+			<Link href={`/products/${product.slug}`} key={product.id}>
 				<div className="card-elevated hover-lift group relative flex h-full flex-col overflow-hidden">
 					{product?.thumbnail?.url && (
 						<div className="relative overflow-hidden bg-gradient-to-br from-base-900 to-base-950">
@@ -62,7 +62,7 @@ export function ProductElement({
 						style={{ boxShadow: "0 0 30px rgba(var(--glow-color), 0.15)" }}
 					></div>
 				</div>
-			</LinkWithChannel>
+			</Link>
 		</li>
 	);
 }

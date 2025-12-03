@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { LinkWithChannel } from "../atoms/LinkWithChannel";
+import Link from "next/link";
 
 export async function Pagination({
 	pageInfo,
@@ -64,7 +64,7 @@ export async function Pagination({
 	return (
 		<nav className="flex flex-col items-center justify-center gap-4 px-4 pt-8 sm:flex-row sm:gap-6 sm:pt-12">
 			{/* Previous button */}
-			<LinkWithChannel
+			<Link
 				href={hasPrev ? `${pageInfo.basePathname}?${prevSearchParams.toString()}` : "#"}
 				className={clsx("w-full text-center text-sm font-medium tracking-wide sm:w-auto", {
 					"btn-primary": hasPrev,
@@ -75,7 +75,7 @@ export async function Pagination({
 			>
 				<span className="hidden sm:inline">← Previous</span>
 				<span className="sm:hidden">← Prev</span>
-			</LinkWithChannel>
+			</Link>
 
 			{/* Page indicator */}
 			<div className="flex items-center gap-x-2 text-sm text-base-600">
@@ -92,7 +92,7 @@ export async function Pagination({
 			</div>
 
 			{/* Next button */}
-			<LinkWithChannel
+			<Link
 				href={pageInfo.hasNextPage ? `${pageInfo.basePathname}?${nextSearchParams.toString()}` : "#"}
 				className={clsx("w-full text-center text-sm font-medium tracking-wide sm:w-auto", {
 					"btn-primary": pageInfo.hasNextPage,
@@ -102,7 +102,7 @@ export async function Pagination({
 				aria-disabled={!pageInfo.hasNextPage}
 			>
 				Next →
-			</LinkWithChannel>
+			</Link>
 		</nav>
 	);
 }

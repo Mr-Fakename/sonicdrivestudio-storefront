@@ -1,4 +1,4 @@
-import { LinkWithChannel } from "../atoms/LinkWithChannel";
+import Link from "next/link";
 import { ChannelSelect } from "./ChannelSelect";
 import { ChannelsListDocument, MenuGetBySlugDocument } from "@/gql/graphql";
 import { executeGraphQL } from "@/lib/graphql";
@@ -53,48 +53,48 @@ export async function Footer() {
 										if (child.category) {
 											return (
 												<li key={child.id}>
-													<LinkWithChannel
+													<Link
 														href={`/categories/${child.category.slug}`}
 														className="text-base-300 transition-colors duration-200 hover:text-accent-200"
 													>
 														{child.category.name}
-													</LinkWithChannel>
+													</Link>
 												</li>
 											);
 										}
 										if (child.collection) {
 											return (
 												<li key={child.id}>
-													<LinkWithChannel
+													<Link
 														href={`/collections/${child.collection.slug}`}
 														className="text-base-300 transition-colors duration-200 hover:text-accent-200"
 													>
 														{child.collection.name}
-													</LinkWithChannel>
+													</Link>
 												</li>
 											);
 										}
 										if (child.page) {
 											return (
 												<li key={child.id}>
-													<LinkWithChannel
+													<Link
 														href={`/pages/${child.page.slug}`}
 														className="text-base-300 transition-colors duration-200 hover:text-accent-200"
 													>
 														{child.page.title}
-													</LinkWithChannel>
+													</Link>
 												</li>
 											);
 										}
 										if (child.url) {
 											return (
 												<li key={child.id}>
-													<LinkWithChannel
+													<Link
 														href={child.url}
 														className="text-base-300 transition-colors duration-200 hover:text-accent-200"
 													>
 														{child.name}
-													</LinkWithChannel>
+													</Link>
 												</li>
 											);
 										}

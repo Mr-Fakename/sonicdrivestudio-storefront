@@ -2,11 +2,11 @@
 
 import { useState, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { toast } from "react-toastify";
 import { DeleteLineButton } from "./DeleteLineButton";
 import { QuantitySelector } from "@/checkout/components/QuantitySelector";
 import { formatMoney, getHrefForVariant } from "@/lib/utils";
-import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
 
 export interface CartItemProps {
 	item: {
@@ -126,7 +126,7 @@ export function CartItem({ item, checkoutId, onQuantityChange, onDelete, index }
 				<div className="relative flex min-w-0 flex-1 flex-col justify-between">
 					<div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:justify-between">
 						<div className="min-w-0 flex-1">
-							<LinkWithChannel
+							<Link
 								href={getHrefForVariant({
 									productSlug: item.variant.product.slug,
 									variantId: item.variant.id,
@@ -134,7 +134,7 @@ export function CartItem({ item, checkoutId, onQuantityChange, onDelete, index }
 								className="transition-colors duration-200 group-hover:text-accent-200"
 							>
 								<h2 className="break-words text-base font-medium text-white sm:text-lg">{item.variant?.product?.name}</h2>
-							</LinkWithChannel>
+							</Link>
 							<p className="mt-1 break-words text-sm text-base-400">{item.variant?.product?.category?.name}</p>
 							{item.variant.name !== item.variant.id && Boolean(item.variant.name) && (
 								<p className="mt-1 break-words text-sm text-base-500">

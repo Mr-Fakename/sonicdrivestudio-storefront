@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { LinkWithChannel } from "../atoms/LinkWithChannel";
+import Link from "next/link";
 import { formatDate, formatMoney, getHrefForVariant } from "@/lib/utils";
 import { type OrderDetailsFragment } from "@/gql/graphql";
 import { PaymentStatus } from "@/ui/components/PaymentStatus";
@@ -33,12 +33,12 @@ export const OrderListItem = ({ order, customerEmail }: Props) => {
 					</div>
 				</dl>
 				<div className="flex flex-col md:col-span-1 md:flex-row md:items-center lg:col-span-2">
-					<LinkWithChannel
+					<Link
 						href={`/orders/${encodeURIComponent(order.id)}`}
 						className="flex items-center justify-center rounded border text-black border-neutral-200 bg-white px-4 py-2 text-sm hover:bg-neutral-50 focus:bg-neutral-50 md:ml-auto"
 					>
 						View Order
-					</LinkWithChannel>
+					</Link>
 				</div>
 			</div>
 
@@ -78,7 +78,7 @@ export const OrderListItem = ({ order, customerEmail }: Props) => {
 														</div>
 													)}
 													<div>
-														<LinkWithChannel
+														<Link
 															href={getHrefForVariant({
 																productSlug: product.slug,
 																variantId: item.variant.id,
@@ -86,7 +86,7 @@ export const OrderListItem = ({ order, customerEmail }: Props) => {
 															className="font-medium text-neutral-900"
 														>
 															{product.name}
-														</LinkWithChannel>
+														</Link>
 														{item.variant.name !== item.variant.id && Boolean(item.variant.name) && (
 															<p className="mt-1">Variant: {item.variant.name}</p>
 														)}

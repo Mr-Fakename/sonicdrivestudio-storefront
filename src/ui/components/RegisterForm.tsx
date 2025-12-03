@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useUserRegisterMutation } from "@/checkout/graphql";
-import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
+import Link from "next/link";
 
 export function RegisterForm() {
 	const [, userRegister] = useUserRegisterMutation();
@@ -112,12 +112,12 @@ export function RegisterForm() {
 						activate your account.
 					</p>
 					<div className="space-y-3">
-						<LinkWithChannel href="/login" className="btn-primary block w-full text-center">
+						<Link href="/login" className="btn-primary block w-full text-center">
 							Go to Sign In
-						</LinkWithChannel>
-						<LinkWithChannel href="/" className="btn-secondary block w-full text-center">
+						</Link>
+						<Link href="/" className="btn-secondary block w-full text-center">
 							Return to Home
-						</LinkWithChannel>
+						</Link>
 					</div>
 				</div>
 			</div>
@@ -197,9 +197,9 @@ export function RegisterForm() {
 
 				<p className="text-center text-sm text-base-300">
 					Already have an account?{" "}
-					<LinkWithChannel href="/login" className="text-accent-200 hover:text-accent-300">
+					<Link href="/login" className="text-accent-200 hover:text-accent-300">
 						Sign in
-					</LinkWithChannel>
+					</Link>
 				</p>
 			</form>
 		</div>

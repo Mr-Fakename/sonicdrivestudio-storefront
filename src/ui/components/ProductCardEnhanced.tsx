@@ -5,7 +5,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { InfoIcon, XIcon } from "lucide-react";
 import xss from "xss";
 import { type ProductListItemFragment } from "@/gql/graphql";
-import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
+import Link from "next/link";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
 import { formatMoneyRange } from "@/lib/utils";
 import { parseEditorJsToHTML } from "@/lib/editorjs/parser";
@@ -55,7 +55,7 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 			<li data-testid="ProductCardEnhanced" className="stagger-item">
 				<div className="card-elevated hover-lift group relative flex h-full flex-col overflow-hidden">
 					{/* Product Image */}
-					<LinkWithChannel
+					<Link
 						href={`/products/${product.slug}`}
 						className="block"
 						aria-label={`View ${product.name} product image`}
@@ -75,11 +75,11 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 								<div className="animate-shimmer pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 							</div>
 						)}
-					</LinkWithChannel>
+					</Link>
 
 					{/* Product Info - flex-1 to fill space, flex-col to stack content */}
 					<div className="mt-4 flex flex-1 flex-col">
-						<LinkWithChannel
+						<Link
 							href={`/products/${product.slug}`}
 							className="block flex-1"
 							aria-label={`View details for ${product.name}`}
@@ -120,10 +120,10 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 									</div>
 								)}
 							</div>
-						</LinkWithChannel>
+						</Link>
 
 						{/* Price - pushed to bottom with mt-auto */}
-						<LinkWithChannel
+						<Link
 							href={`/products/${product.slug}`}
 							className="mt-auto block"
 							aria-label={`View pricing for ${product.name}`}
@@ -143,7 +143,7 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 									→
 								</span>
 							</div>
-						</LinkWithChannel>
+						</Link>
 					</div>
 
 					{/* Glow effect on hover */}
@@ -228,7 +228,7 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 											stop: product?.pricing?.priceRange?.stop?.gross,
 										})}
 									</p>
-									<LinkWithChannel href={`/products/${product.slug}`}>
+									<Link href={`/products/${product.slug}`}>
 										<button
 											type="button"
 											className="btn-primary rounded-md px-4 py-2 text-sm font-medium"
@@ -236,7 +236,7 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 										>
 											View Product
 										</button>
-									</LinkWithChannel>
+									</Link>
 								</div>
 							</Dialog.Panel>
 						</Transition.Child>

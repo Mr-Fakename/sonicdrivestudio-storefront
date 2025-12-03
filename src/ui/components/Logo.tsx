@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { LinkWithChannel } from "../atoms/LinkWithChannel";
+import Link from "next/link";
 import logoImage from "@/images/sds_assets/logo.png";
 
 const companyName = "SDS";
@@ -31,9 +31,9 @@ export const Logo = () => {
 	}
 	return (
 		<div className="flex items-center">
-			<LinkWithChannel aria-label="homepage" href="/">
+			<Link aria-label="homepage" href="/">
 				{logoContent}
-			</LinkWithChannel>
+			</Link>
 		</div>
 	);
 };

@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { type ReactElement } from "react";
-import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
+import Link from "next/link";
 import useSelectedPathname from "@/hooks/useSelectedPathname";
 
 export function NavLink({
@@ -21,7 +21,7 @@ export function NavLink({
 
 	if (isMobile) {
 		return (
-			<LinkWithChannel
+			<Link
 				href={href}
 				className={clsx(
 					isActive ? "text-accent-400" : "text-white",
@@ -30,13 +30,13 @@ export function NavLink({
 				style={{ "--animation-delay": `${index * 0.1}s` } as React.CSSProperties}
 			>
 				{children}
-			</LinkWithChannel>
+			</Link>
 		);
 	}
 
 	return (
 		<li className="inline-flex">
-			<LinkWithChannel
+			<Link
 				href={href}
 				className={clsx(
 					isActive ? "text-accent-400" : "text-base-300",
@@ -44,7 +44,7 @@ export function NavLink({
 				)}
 			>
 				{children}
-			</LinkWithChannel>
+			</Link>
 		</li>
 	);
 }

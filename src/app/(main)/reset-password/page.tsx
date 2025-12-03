@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { ResetPasswordForm } from "@/ui/components/ResetPasswordForm";
-import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
+import Link from "next/link";
 
 export default function ResetPasswordPage() {
 	const searchParams = useSearchParams();
@@ -22,9 +22,9 @@ export default function ResetPasswordPage() {
 								reset link.
 							</p>
 						</div>
-						<LinkWithChannel href="/forgot-password" className="btn-primary block w-full text-center">
+						<Link href="/forgot-password" className="btn-primary block w-full text-center">
 							Request New Link
-						</LinkWithChannel>
+						</Link>
 					</div>
 				</div>
 			</section>

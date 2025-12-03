@@ -6,7 +6,7 @@ import { formatDate, formatMoney } from "@/lib/utils";
 import Image from "next/image";
 import { PaymentStatus } from "@/ui/components/PaymentStatus";
 import { OrderDownloadLinks } from "@/ui/components/OrderDownloadLinks";
-import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
+import Link from "next/link";
 import { getHrefForVariant } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -43,12 +43,12 @@ export default async function OrderDetailsPage({ params }: Props) {
 	return (
 		<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 			<div className="mb-6">
-				<LinkWithChannel
+				<Link
 					href="/orders"
 					className="text-sm text-blue-600 hover:text-blue-800"
 				>
 					← Back to Orders
-				</LinkWithChannel>
+				</Link>
 			</div>
 
 			<div className="mb-8">
@@ -128,7 +128,7 @@ export default async function OrderDetailsPage({ params }: Props) {
 															</div>
 														)}
 														<div>
-															<LinkWithChannel
+															<Link
 																href={getHrefForVariant({
 																	productSlug: product.slug,
 																	variantId: item.variant.id,
@@ -136,7 +136,7 @@ export default async function OrderDetailsPage({ params }: Props) {
 																className="font-medium text-neutral-900 hover:text-neutral-700"
 															>
 																{item.productName}
-															</LinkWithChannel>
+															</Link>
 															{item.variantName && (
 																<p className="mt-1 text-sm text-neutral-500">
 																	{item.variantName}

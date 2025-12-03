@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { saleorAuthClient } from "@/ui/components/AuthProvider";
-import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
+import Link from "next/link";
 
 export function LoginForm() {
 	const router = useRouter();
@@ -115,12 +115,12 @@ export function LoginForm() {
 				</div>
 
 				<div className="mb-6 text-right">
-					<LinkWithChannel
+					<Link
 						href="/forgot-password"
 						className="text-sm text-accent-200 hover:text-accent-300"
 					>
 						Forgot password?
-					</LinkWithChannel>
+					</Link>
 				</div>
 
 				<button className="btn-primary mb-4 w-full" type="submit" disabled={loading}>
@@ -129,9 +129,9 @@ export function LoginForm() {
 
 				<p className="text-center text-sm text-base-300">
 					Don&apos;t have an account?{" "}
-					<LinkWithChannel href="/register" className="text-accent-200 hover:text-accent-300">
+					<Link href="/register" className="text-accent-200 hover:text-accent-300">
 						Create account
-					</LinkWithChannel>
+					</Link>
 				</p>
 			</form>
 		</div>

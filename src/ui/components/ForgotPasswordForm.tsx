@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRequestPasswordResetMutation } from "@/checkout/graphql";
-import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
+import Link from "next/link";
 
 export function ForgotPasswordForm() {
 	const [errors, setErrors] = useState<string[]>([]);
@@ -109,9 +109,9 @@ export function ForgotPasswordForm() {
 
 				<p className="text-center text-sm text-base-300">
 					Remember your password?{" "}
-					<LinkWithChannel href="/login" className="text-accent-200 hover:text-accent-300">
+					<Link href="/login" className="text-accent-200 hover:text-accent-300">
 						Back to login
-					</LinkWithChannel>
+					</Link>
 				</p>
 			</form>
 		</div>

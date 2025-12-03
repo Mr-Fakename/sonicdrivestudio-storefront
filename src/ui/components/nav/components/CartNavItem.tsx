@@ -1,7 +1,7 @@
 import { ShoppingBagIcon } from "lucide-react";
 import clsx from "clsx";
 import * as Checkout from "@/lib/checkout";
-import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
+import Link from "next/link";
 
 export const CartNavItem = async () => {
 	const checkoutId = await Checkout.getIdFromCookies();
@@ -10,7 +10,7 @@ export const CartNavItem = async () => {
 	const lineCount = checkout ? checkout.lines.reduce((result, line) => result + line.quantity, 0) : 0;
 
 	return (
-		<LinkWithChannel
+		<Link
 			href="/cart"
 			className="group relative flex items-center text-white transition-colors duration-300 hover:text-accent-400"
 			data-testid="CartNavItem"
@@ -31,6 +31,6 @@ export const CartNavItem = async () => {
 			) : (
 				<span className="sr-only">0 items in cart</span>
 			)}
-		</LinkWithChannel>
+		</Link>
 	);
 };

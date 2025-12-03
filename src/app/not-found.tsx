@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
+import Link from "next/link";
 import { Header } from "@/ui/components/Header";
 import { Footer } from "@/ui/components/Footer";
 import NotFoundImage from "@/images/404.jpg";
@@ -68,13 +68,13 @@ export default function NotFound() {
 
 									{/* CTA Button */}
 									<div className="lg:ml-auto">
-										<LinkWithChannel
+										<Link
 											href="/"
 											className="btn-primary inline-block px-8 py-3 text-lg"
 											aria-label="Return to homepage"
 										>
 											Go back home
-										</LinkWithChannel>
+										</Link>
 									</div>
 								</div>
 							</div>

@@ -155,9 +155,7 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 			</li>
 
 			{/* Description Modal */}
-			{isDescriptionOpen && (
-				<Suspense fallback={null}>
-					<Transition show={isDescriptionOpen} as={Fragment}>
+						<Transition show={isDescriptionOpen} as={Fragment}>
 				<Dialog
 					as="div"
 					className="relative z-[100]"
@@ -245,8 +243,7 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 					</div>
 				</Dialog>
 			</Transition>
-				</Suspense>
-			)}
+				)}
 		</>
 	);
 }

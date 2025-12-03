@@ -136,9 +136,7 @@ export default function RootLayout(props: { children: ReactNode }) {
 				<link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SALEOR_API_URL} />
 
 			{/* Note: Font preloading is handled automatically by Next.js localFont with preload: true */}
-			<link
-							/>
-
+	
 				{/* Structured Data for SEO */}
 				<StructuredData data={[generateOrganizationSchema(), generateWebsiteSchema()]} />
 			</head>

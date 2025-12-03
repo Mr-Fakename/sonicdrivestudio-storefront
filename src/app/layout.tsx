@@ -137,11 +137,7 @@ export default function RootLayout(props: { children: ReactNode }) {
 
 			{/* Note: Font preloading is handled automatically by Next.js localFont with preload: true */}
 			<link
-				rel="preload"
-					as="font"
-				type="font/woff2"
-				crossOrigin="anonymous"
-			/>
+							/>
 
 				{/* Structured Data for SEO */}
 				<StructuredData data={[generateOrganizationSchema(), generateWebsiteSchema()]} />

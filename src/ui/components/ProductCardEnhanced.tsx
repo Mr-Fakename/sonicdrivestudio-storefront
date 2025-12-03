@@ -154,7 +154,7 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 				</div>
 			</li>
 
-			{/* Description Modal - Lazy loaded for better initial bundle size */}
+			{/* Description Modal */}
 			{isDescriptionOpen && (
 				<Suspense fallback={null}>
 					<Transition show={isDescriptionOpen} as={Fragment}>

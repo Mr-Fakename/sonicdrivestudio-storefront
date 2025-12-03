@@ -1,7 +1,6 @@
 "use client";
 
-import { Fragment, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { Fragment, useState, lazy, Suspense } from "react";
 import { InfoIcon, XIcon } from "lucide-react";
 import xss from "xss";
 import { type ProductListItemFragment } from "@/gql/graphql";
@@ -9,6 +8,10 @@ import { LinkWithChannel } from "@/ui/atoms/LinkWithChannel";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
 import { formatMoneyRange } from "@/lib/utils";
 import { parseEditorJsToHTML } from "@/lib/editorjs/parser";
+
+// Lazy load Dialog and Transition since they're not needed on initial render
+const Dialog = lazy(() => import("@headlessui/react").then((mod) => ({ default: mod.Dialog })));
+const Transition = lazy(() => import("@headlessui/react").then((mod) => ({ default: mod.Transition })));
 
 interface ProductCardEnhancedProps {
 	product: ProductListItemFragment;
@@ -154,8 +157,10 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 				</div>
 			</li>
 
-			{/* Description Modal */}
-			<Transition show={isDescriptionOpen} as={Fragment}>
+			{/* Description Modal - Lazy loaded for better initial bundle size */}
+			{isDescriptionOpen && (
+				<Suspense fallback={null}>
+					<Transition show={isDescriptionOpen} as={Fragment}>
 				<Dialog
 					as="div"
 					className="relative z-[100]"
@@ -243,6 +248,8 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 					</div>
 				</Dialog>
 			</Transition>
+				</Suspense>
+			)}
 		</>
 	);
 }

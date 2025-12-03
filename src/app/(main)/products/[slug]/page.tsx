@@ -246,7 +246,7 @@ export default async function Page(props: {
 							width={800}
 							height={800}
 							src={firstImage.url}
-							sizes="(max-width: 1024px) 100vw, 50vw"
+							sizes="(max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc(50vw - 48px), 640px"
 						/>
 					)}
 				</div>

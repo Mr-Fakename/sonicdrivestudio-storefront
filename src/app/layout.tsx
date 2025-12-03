@@ -135,7 +135,7 @@ export default function RootLayout(props: { children: ReactNode }) {
 				<link rel="preconnect" href={process.env.NEXT_PUBLIC_SALEOR_API_URL} crossOrigin="anonymous" />
 				<link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SALEOR_API_URL} />
 
-			{/* Preload critical font */}
+			{/* Note: Font preloading is handled automatically by Next.js localFont with preload: true */}
 			<link
 				rel="preload"
 				href="/fonts/Geometos.woff2"

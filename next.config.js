@@ -32,9 +32,11 @@ const config = {
 		// Remove console.log and console.warn in production, keep console.error for critical errors
 		removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false,
 	},
-	// Configure transpilation to target modern browsers only
-	// This tells Next.js to skip unnecessary polyfills
+	// Configure transpilation to target modern browsers only (ES2020+)
+	// Browserslist in package.json handles the transpilation target
 	transpilePackages: [],
+	// Turbopack configuration (empty = use defaults, which work with browserslist)
+	turbopack: {},
 	// Better tree shaking for common libraries
 	modularizeImports: {
 		lodash: {

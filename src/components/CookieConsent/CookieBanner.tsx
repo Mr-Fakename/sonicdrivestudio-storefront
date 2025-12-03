@@ -25,8 +25,8 @@ export const CookieBanner: FC<CookieBannerProps> = ({
 							payments via Stripe. Third-party cookies are used for YouTube video embeds,
 							and you are free to refuse them.
 						</p>
-						<p className="text-sm text-base-400">
-							<strong className="text-base-300">We don&apos;t track you</strong> - no
+						<p className="text-sm text-base-300">
+							<strong className="text-base-200">We don&apos;t track you</strong> - no
 							analytics, no behavioral profiling, no marketing cookies.
 						</p>
 					</div>
@@ -47,7 +47,7 @@ export const CookieBanner: FC<CookieBannerProps> = ({
 						</button>
 						<button
 							onClick={onOpenSettings}
-							className="rounded-md border border-base-700 bg-transparent px-6 py-3 text-xs font-semibold uppercase tracking-wide text-base-400 transition-all duration-300 hover:border-base-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent-700 focus:ring-offset-2 focus:ring-offset-base-950"
+							className="rounded-md border border-base-700 bg-transparent px-6 py-3 text-xs font-semibold uppercase tracking-wide text-base-300 transition-all duration-300 hover:border-base-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent-700 focus:ring-offset-2 focus:ring-offset-base-950"
 						>
 							Settings
 						</button>

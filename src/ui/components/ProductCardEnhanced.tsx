@@ -100,7 +100,7 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 								{/* Description Preview - takes available space */}
 								{hasDescription && (
 									<div className="mt-3 flex items-start gap-2">
-										<p className="flex-1 text-xs leading-relaxed text-base-400 transition-colors duration-300 group-hover:text-base-300">
+										<p className="flex-1 text-xs leading-relaxed text-base-300 transition-colors duration-300 group-hover:text-base-200">
 											{descriptionPreview}
 										</p>
 										{/* Info Icon Button */}
@@ -111,7 +111,7 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 												e.stopPropagation();
 												setIsDescriptionOpen(true);
 											}}
-											className="flex-shrink-0 rounded-full p-1.5 text-base-400 transition-all duration-200 hover:bg-base-800 hover:text-accent-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-base-950"
+											className="flex-shrink-0 rounded-full p-1.5 text-base-300 transition-all duration-200 hover:bg-base-800 hover:text-accent-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-base-950"
 											aria-label="View full description"
 											title="View full description"
 										>
@@ -155,7 +155,7 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 			</li>
 
 			{/* Description Modal */}
-			<Transition show={isDescriptionOpen} as={Fragment}>
+						<Transition show={isDescriptionOpen} as={Fragment}>
 				<Dialog
 					as="div"
 					className="relative z-[100]"
@@ -196,7 +196,7 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 									</Dialog.Title>
 									<button
 										type="button"
-										className="rounded-full p-1 text-base-400 transition-colors hover:bg-base-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent-500"
+										className="rounded-full p-1 text-base-300 transition-colors hover:bg-base-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-accent-500"
 										onClick={() => setIsDescriptionOpen(false)}
 										aria-label="Close dialog"
 									>
@@ -243,6 +243,6 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 					</div>
 				</Dialog>
 			</Transition>
-		</>
-	);
+	</>
+);
 }

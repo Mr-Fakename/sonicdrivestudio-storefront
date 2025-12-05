@@ -53,6 +53,31 @@ export const useAddressListForm = ({
 	const { addressList, selectedAddressId } = values;
 	const selectedAddress = addressList.find(getById(selectedAddressId));
 
+	// Track if we've initialized the form with user addresses (to prevent re-initialization)
+	const initializedRef = useRef(false);
+
+	// Update form when user addresses load (e.g., after login)
+	useEffect(() => {
+		// Only update if form was initialized with empty addresses and now we have addresses from user
+		// This happens when: user logs in and their addresses load
+		const formWasEmpty = addressList.length === 0;
+		const userHasAddresses = addresses.length > 0;
+		const shouldInitialize = formWasEmpty && userHasAddresses && !initializedRef.current;
+
+		if (shouldInitialize) {
+			initializedRef.current = true;
+
+			// Find matching address from checkout or default
+			const matchingCheckoutAddress = addresses.find(getByMatchingAddress(checkoutAddress));
+			const matchingDefaultAddress = addresses.find(getByMatchingAddress(defaultAddress));
+
+			setValues({
+				addressList: addresses,
+				selectedAddressId: matchingCheckoutAddress?.id || matchingDefaultAddress?.id || addresses[0]?.id,
+			});
+		}
+	}, [addresses, addressList, checkoutAddress, defaultAddress, setValues]);
+
 	useEffect(() => {
 		debouncedSubmit();
 	}, [debouncedSubmit, selectedAddressId]);

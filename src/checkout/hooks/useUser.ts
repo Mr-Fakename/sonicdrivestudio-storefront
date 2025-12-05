@@ -3,10 +3,11 @@ import { useUserQuery } from "@/checkout/graphql";
 export const useUser = ({ pause = false } = {}) => {
 	const [{ data, fetching: loading, stale }] = useUserQuery({
 		pause,
-		// Use cache-first to prevent re-fetching on every render
-		// This is especially important since the user query can be slow (4.5s+)
-		// when users have many addresses
-		requestPolicy: "cache-first",
+		// Use cache-and-network to ensure fresh data after login
+		// This returns cached data immediately but always fetches in background
+		// This is important for checkout - when users log in, we need fresh address data
+		// The background fetch ensures forms populate with current user data
+		requestPolicy: "cache-and-network",
 	});
 
 	const user = data?.user;

@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
-import { type ResolvingMetadata, type Metadata } from "next";
+import { type Metadata } from "next";
 import { Suspense } from "react";
 import xss from "xss";
 import { invariant } from "ts-invariant";
@@ -31,7 +31,6 @@ export async function generateMetadata(
 		params: Promise<{ slug: string }>;
 		searchParams: Promise<{ variant?: string }>;
 	},
-	parent: ResolvingMetadata,
 ): Promise<Metadata> {
 	const [searchParams, params] = await Promise.all([props.searchParams, props.params]);
 

@@ -12,6 +12,7 @@
 .page input[type="password"],
 .page input[type="number"],
 .page select,
+.page input[name='cortexCloudUsername'],
 .page textarea {
 	@apply border-base-700 bg-base-950 text-white placeholder:text-base-500 !important;
 	@apply focus:border-accent-500 focus:ring-2 focus:ring-accent-500 !important;
@@ -78,6 +79,7 @@
 [class*="Money"],
 .price {
 	@apply font-medium text-white !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
 }
 
 /* Headings */

@@ -3,9 +3,9 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { InfoIcon, XIcon } from "lucide-react";
+import Link from "next/link";
 import xss from "xss";
 import { type ProductListItemFragment } from "@/gql/graphql";
-import Link from "next/link";
 import { ProductImageWrapper } from "@/ui/atoms/ProductImageWrapper";
 import { formatMoneyRange } from "@/lib/utils";
 import { parseEditorJsToHTML } from "@/lib/editorjs/parser";
@@ -71,6 +71,12 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 									priority={priority}
 									sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
 								/>
+								{/* Sale Badge */}
+								{product.pricing?.onSale && (
+									<div className="absolute left-2 top-2 rounded bg-red-600 px-2 py-1 text-xs font-bold uppercase tracking-wide text-white shadow-lg">
+										Sale
+									</div>
+								)}
 								{/* Shimmer effect on hover */}
 								<div className="animate-shimmer pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 							</div>
@@ -129,12 +135,22 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 							aria-label={`View pricing for ${product.name}`}
 						>
 							<div className="mt-4 flex items-center justify-between border-t border-base-800 pt-4">
-								<p className="gradient-text text-base font-semibold">
-									{formatMoneyRange({
-										start: product?.pricing?.priceRange?.start?.gross,
-										stop: product?.pricing?.priceRange?.stop?.gross,
-									})}
-								</p>
+								<div className="flex flex-col">
+									{product.pricing?.onSale && product.pricing?.priceRangeUndiscounted?.start?.gross && (
+										<span className="text-sm text-base-400 line-through">
+											{formatMoneyRange({
+												start: product.pricing.priceRangeUndiscounted.start.gross,
+												stop: product.pricing.priceRangeUndiscounted.stop?.gross,
+											})}
+										</span>
+									)}
+									<p className={`text-base font-semibold ${product.pricing?.onSale ? "text-red-400" : "gradient-text"}`}>
+										{formatMoneyRange({
+											start: product?.pricing?.priceRange?.start?.gross,
+											stop: product?.pricing?.priceRange?.stop?.gross,
+										})}
+									</p>
+								</div>
 								{/* Animated arrow indicator */}
 								<span
 									className="translate-x-0 transform text-accent-200 opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100"
@@ -222,12 +238,22 @@ export function ProductCardEnhanced({ product, loading = "lazy", priority = fals
 
 								{/* Modal Footer */}
 								<div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-base-800 pt-4">
-									<p className="gradient-text text-lg font-semibold">
-										{formatMoneyRange({
-											start: product?.pricing?.priceRange?.start?.gross,
-											stop: product?.pricing?.priceRange?.stop?.gross,
-										})}
-									</p>
+									<div className="flex flex-col">
+										{product.pricing?.onSale && product.pricing?.priceRangeUndiscounted?.start?.gross && (
+											<span className="text-sm text-base-400 line-through">
+												{formatMoneyRange({
+													start: product.pricing.priceRangeUndiscounted.start.gross,
+													stop: product.pricing.priceRangeUndiscounted.stop?.gross,
+												})}
+											</span>
+										)}
+										<p className={`text-lg font-semibold ${product.pricing?.onSale ? "text-red-400" : "gradient-text"}`}>
+											{formatMoneyRange({
+												start: product?.pricing?.priceRange?.start?.gross,
+												stop: product?.pricing?.priceRange?.stop?.gross,
+											})}
+										</p>
+									</div>
 									<Link href={`/products/${product.slug}`}>
 										<button
 											type="button"

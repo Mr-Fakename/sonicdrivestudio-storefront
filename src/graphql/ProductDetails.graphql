@@ -18,7 +18,28 @@ query ProductDetails($slug: String!, $channel: String!) {
 			...VariantDetails
 		}
 		pricing {
+			onSale
+			discount {
+				gross {
+					amount
+					currency
+				}
+			}
 			priceRange {
+				start {
+					gross {
+						amount
+						currency
+					}
+				}
+				stop {
+					gross {
+						amount
+						currency
+					}
+				}
+			}
+			priceRangeUndiscounted {
 				start {
 					gross {
 						amount

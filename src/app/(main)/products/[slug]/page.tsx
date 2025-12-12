@@ -185,6 +185,10 @@ export default async function Page(props: {
 
 	const isAvailable = variants?.some((variant) => variant.quantityAvailable) ?? false;
 
+	// Check if product or selected variant is on sale
+	const isOnSale = selectedVariant?.pricing?.onSale ?? product?.pricing?.onSale ?? false;
+
+	// Calculate current price (discounted if on sale)
 	const price = selectedVariant?.pricing?.price?.gross
 		? formatMoney(selectedVariant.pricing.price.gross.amount, selectedVariant.pricing.price.gross.currency)
 		: isAvailable
@@ -193,6 +197,16 @@ export default async function Page(props: {
 					stop: product?.pricing?.priceRange?.stop?.gross,
 				})
 			: "";
+
+	// Calculate original (undiscounted) price for sale items
+	const originalPrice = selectedVariant?.pricing?.priceUndiscounted?.gross
+		? formatMoney(selectedVariant.pricing.priceUndiscounted.gross.amount, selectedVariant.pricing.priceUndiscounted.gross.currency)
+		: isAvailable && product?.pricing?.priceRangeUndiscounted?.start?.gross
+			? formatMoneyRange({
+					start: product.pricing.priceRangeUndiscounted.start.gross,
+					stop: product.pricing.priceRangeUndiscounted.stop?.gross,
+				})
+			: null;
 
 	const productJsonLd: WithContext<Product> = {
 		"@context": "https://schema.org",
@@ -239,14 +253,22 @@ export default async function Page(props: {
 				{/* Static: Product image - prerendered with PPR */}
 				<div className="lg:sticky lg:top-24 lg:self-start">
 					{firstImage && (
-						<ProductImageWrapper
-							priority={true}
-							alt={firstImage.alt || `${product?.name} product image`}
-							width={800}
-							height={800}
-							src={firstImage.url}
-							sizes="(max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc(50vw - 48px), 640px"
-						/>
+						<div className="relative">
+							<ProductImageWrapper
+								priority={true}
+								alt={firstImage.alt || `${product?.name} product image`}
+								width={800}
+								height={800}
+								src={firstImage.url}
+								sizes="(max-width: 1024px) calc(100vw - 48px), (max-width: 1280px) calc(50vw - 48px), 640px"
+							/>
+							{/* Sale Badge */}
+							{isOnSale && (
+								<div className="absolute left-4 top-4 rounded bg-red-600 px-3 py-1.5 text-sm font-bold uppercase tracking-wide text-white shadow-lg">
+									Sale
+								</div>
+							)}
+						</div>
 					)}
 				</div>
 
@@ -256,9 +278,25 @@ export default async function Page(props: {
 						<h1 className="mb-3 font-display text-4xl font-light tracking-tight text-white lg:text-5xl">
 							{product?.name}
 						</h1>
-						<p className="text-2xl font-medium text-accent-100" data-testid="ProductElement_Price">
-							{price}
-						</p>
+						<div className="flex flex-wrap items-baseline gap-3" data-testid="ProductElement_Price">
+							{isOnSale && originalPrice && (
+								<span className="text-xl text-base-400 line-through">
+									{originalPrice}
+								</span>
+							)}
+							<p className={`text-2xl font-medium ${isOnSale ? "text-red-400" : "text-accent-100"}`}>
+								{price}
+							</p>
+							{isOnSale && (
+								<span className="rounded bg-red-600/20 px-2 py-0.5 text-sm font-medium text-red-400">
+									Save {selectedVariant?.pricing?.discount?.gross
+										? formatMoney(selectedVariant.pricing.discount.gross.amount, selectedVariant.pricing.discount.gross.currency)
+										: product?.pricing?.discount?.gross
+											? formatMoney(product.pricing.discount.gross.amount, product.pricing.discount.gross.currency)
+											: ""}
+								</span>
+							)}
+						</div>
 					</div>
 
 					{/* Dynamic: Interactive elements - streamed with Suspense */}

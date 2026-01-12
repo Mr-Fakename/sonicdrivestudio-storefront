@@ -4,7 +4,6 @@ import { ProductList } from "@/ui/components/ProductList";
 import { DEFAULT_CHANNEL } from "@/app/config";
 import { parseEditorJsToHTML } from "@/lib/editorjs/parser";
 import { EditorJsContent } from "@/ui/components/EditorJsContent";
-import { ConstructionBanner } from "@/components/ConstructionBanner";
 
 // export const experimental_ppr = true; // Requires Next.js canary - uncomment when upgrading
 
@@ -39,9 +38,6 @@ export default async function Page() {
 
 	return (
 		<>
-			{/* Construction Banner */}
-			<ConstructionBanner />
-
 			{/* Hero Section */}
 			<section className="relative mx-auto max-w-7xl px-6 pb-16 pt-20 lg:px-12 lg:pb-24 lg:pt-32">
 				<div className="animate-slide-up-fade space-y-6 text-center">

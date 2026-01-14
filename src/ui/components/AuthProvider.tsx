@@ -13,6 +13,8 @@ import {
 	fetchExchange,
 } from "urql";
 import { authErrorExchange } from "@/lib/urqlAuthErrorExchange";
+import { useInactivityTimeout } from "@/hooks/useInactivityTimeout";
+import { useUser } from "@/checkout/hooks/useUser";
 
 const saleorApiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
 invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
@@ -72,6 +74,23 @@ const makeUrqlClient = () => {
 	});
 };
 
+/**
+ * Inner component that monitors user inactivity and triggers logout.
+ * This must be rendered inside the UrqlProvider to access user state.
+ */
+function InactivityMonitor({ children }: { children: ReactNode }) {
+	const { authenticated } = useUser();
+
+	useInactivityTimeout({
+		isAuthenticated: authenticated,
+		onBeforeLogout: () => {
+			console.log("[AUTH PROVIDER] Logging out user due to inactivity timeout");
+		},
+	});
+
+	return <>{children}</>;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
 	invariant(saleorApiUrl, "Missing NEXT_PUBLIC_SALEOR_API_URL env variable");
 
@@ -90,7 +109,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	return (
 		<SaleorAuthProvider client={saleorAuthClient}>
-			<UrqlProvider value={urqlClient}>{children}</UrqlProvider>
+			<UrqlProvider value={urqlClient}>
+				<InactivityMonitor>{children}</InactivityMonitor>
+			</UrqlProvider>
 		</SaleorAuthProvider>
 	);
 }
